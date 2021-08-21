@@ -1,0 +1,14 @@
+version: "2"
+services:
+  offical_service:
+    image: nexus.eastbabel.cn:8092/tourism-website-service:{TAG}
+    container_name: tourism-website-service
+    environment:
+      OFFICAL_MYSQL_USERNAME: ${OFFICAL_MYSQL_USERNAME}
+      OFFICAL_MYSQL_PASSWORD: ${OFFICAL_MYSQL_PASSWORD}
+      OFFICAL_MYSQL_HOST: ${OFFICAL_MYSQL_HOST}
+      OFFICAL_MYSQL_PORT: ${OFFICAL_MYSQL_PORT}
+    ports:
+      - 8083:8083
+    volumes:
+      - ./logs/:/webapps/tourism-website-service/logs/

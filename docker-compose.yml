@@ -1,6 +1,6 @@
 version: "2"
 services:
-  offical_service:
+  tourism-website-service:
     image: nexus.eastbabel.cn:8092/tourism-website-service:{TAG}
     container_name: tourism-website-service
     environment:

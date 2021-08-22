@@ -11,12 +11,6 @@ public class CreateArticleReq implements Serializable {
 
     private static final long serialVersionUID = 3049933153320066324L;
 
-    @ApiModelProperty("栏目名称")
-    private String catName;
-    @ApiModelProperty("栏目描述")
-    private String catDesc;
-    @ApiModelProperty("是否内置栏目")
-    private Integer builtIn;
     @ApiModelProperty("标题")
     private String title;
     @ApiModelProperty("封面图key")

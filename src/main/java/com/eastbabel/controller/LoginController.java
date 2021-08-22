@@ -29,4 +29,5 @@ public class LoginController {
         TokenBo tokenBo = loginService.adminLogin(adminLoginReq.getAccount(), adminLoginReq.getPassword());
         return ResponseEntity.ok(tokenBo);
     }
+
 }

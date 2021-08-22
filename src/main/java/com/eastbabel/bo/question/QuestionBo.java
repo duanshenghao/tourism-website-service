@@ -15,4 +15,6 @@ public class QuestionBo extends RestEntity implements Serializable {
     private String question;
     @ApiModelProperty("回答")
     private String answer;
+    @ApiModelProperty("是否上架，0：是；1：否")
+    private Integer active;
 }

@@ -26,6 +26,9 @@ public class LoginServiceImpl implements LoginService {
     @Value("${token.salt.admin.refresh}")
     private String adminRefreshTokenSalt;
 
+    @Resource
+    private WebContext webContext;
+
     @Override
     public TokenBo adminLogin(String account, String password) {
         if(StringUtils.isEmpty(account)){
@@ -42,6 +45,8 @@ public class LoginServiceImpl implements LoginService {
         String securityPwd = PasswordUtil.encryption(password, user.getSalt());
         new CustomException("账号或密码错误").throwIf(!securityPwd.equals(user.getPassword()));
         TokenBo token = TokenUtil.signTokens(user.getId(),adminTokenSalt, adminRefreshTokenSalt);
+        webContext.setUserId(user.getId());
+        webContext.setToken(token.getAuthToken());
         return token;
     }
 

@@ -1,6 +1,7 @@
 package com.eastbabel.service.impl;
 
 import com.eastbabel.aop.WebContext;
+import com.eastbabel.bo.RestUserEntity;
 import com.eastbabel.bo.base.PagedResource;
 import com.eastbabel.bo.email.ToEmail;
 import com.eastbabel.bo.notify.CreateNotifyReq;
@@ -50,9 +51,9 @@ public class NotifyServiceImpl implements NotifyService {
         notify.setEmail(createNotifyReq.getEmail());
         notify.setStatus(0);
         LocalDateTime now = LocalDateTime.now();
-        notify.setCreator(webContext.getUserId());
+//        notify.setCreator(webContext.getUserId());
         notify.setCreateTime(now);
-        notify.setUpdater(webContext.getUserId());
+//        notify.setUpdater(webContext.getUserId());
         notify.setUpdateTime(now);
         notifyRepository.save(notify);
         ToEmail toEmail = new ToEmail();
@@ -64,7 +65,11 @@ public class NotifyServiceImpl implements NotifyService {
             tos[i] = list.get(i).getEmail();
         }
         toEmail.setTos(tos);
-        emailService.sendEmail(toEmail);
+        try {
+            emailService.sendEmail(toEmail);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -110,10 +115,18 @@ public class NotifyServiceImpl implements NotifyService {
         notifyBo.setContent(notify.getContent());
         notifyBo.setEmail(notify.getEmail());
         notifyBo.setStatus(notify.getStatus());
-        notifyBo.setCreator(notify.getCreatorUser());
+        SysUser creatorUser = notify.getCreatorUser();
+        RestUserEntity restCreatorUser = new RestUserEntity();
+        restCreatorUser.setId(creatorUser.getId());
+        restCreatorUser.setUsername(creatorUser.getUserName());
+        notifyBo.setCreatorUser(restCreatorUser);
         notifyBo.setCreateTime(notify.getCreateTime());
+        SysUser updateUser = notify.getUpdaterUser();
+        RestUserEntity restUpdateUser = new RestUserEntity();
+        restUpdateUser.setId(updateUser.getId());
+        restUpdateUser.setUsername(updateUser.getUserName());
+        notifyBo.setUpdaterUser(restUpdateUser);
         notifyBo.setUpdateTime(notify.getUpdateTime());
-        notifyBo.setUpdater(notify.getUpdaterUser());
         return notifyBo;
     }
 

@@ -4,6 +4,7 @@ import com.eastbabel.bo.article.ArticleBo;
 import com.eastbabel.bo.article.CreateArticleReq;
 import com.eastbabel.bo.articleCatalog.ArticleCatalogBo;
 import com.eastbabel.bo.articleCatalog.CreateArticleCatalogReq;
+import com.eastbabel.bo.articleCatalog.EditArticleCatalog;
 import com.eastbabel.bo.base.PagedResource;
 import com.eastbabel.bo.base.ResponseEntity;
 import com.eastbabel.dao.entity.ArticleCatalog;
@@ -31,14 +32,16 @@ public class ArticleCatalogController {
     @ApiOperation("获取文章栏目列表(分页)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "builtIn", value = "是否内置栏目"),
+            @ApiImplicitParam(name = "status", value = "状态"),
             @ApiImplicitParam(name = "page", value = "页数"),
             @ApiImplicitParam(name = "size", value = "数据条数")
     })
     public ResponseEntity<PagedResource<ArticleCatalogBo>> getArticleCatalogs(
             @RequestParam(value = "builtIn", required = false) Integer builtIn,
+            @RequestParam(value = "status",required = false) Integer status,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(articleCatalogService.getArticleCatalogs(builtIn, page, size));
+        return ResponseEntity.ok(articleCatalogService.getArticleCatalogs(builtIn,status,page, size));
     }
 
     @GetMapping("articleCatalog/list")
@@ -55,8 +58,8 @@ public class ArticleCatalogController {
 
     @PostMapping("articleCatalog")
     @ApiOperation("编辑文章栏目")
-    public ResponseEntity<String> editArticleCatalog(@Validated @RequestBody ArticleCatalogBo articleCatalogBo) {
-        articleCatalogService.editArticleCatalog(articleCatalogBo);
+    public ResponseEntity<String> editArticleCatalog(@Validated @RequestBody EditArticleCatalog editArticleCatalog) {
+        articleCatalogService.editArticleCatalog(editArticleCatalog);
         return ResponseEntity.ok("success");
     }
 
@@ -70,8 +73,8 @@ public class ArticleCatalogController {
     @PutMapping("articleCatalog/{id}/status/{builtIn}")
     @ApiOperation("修改文章栏目状态")
     public ResponseEntity<String> updateArticleCatalogStatus(@PathVariable("id") Integer id,
-                                                      @PathVariable("builtIn") Integer builtIn) {
-        articleCatalogService.updateArticleCatalogStatus(id, builtIn);
+                                                      @PathVariable("status") Integer status) {
+        articleCatalogService.updateArticleCatalogStatus(id, status);
         return ResponseEntity.succeed();
     }
 }

@@ -1,12 +1,14 @@
 package com.eastbabel.service.impl;
 
 import com.eastbabel.aop.WebContext;
+import com.eastbabel.bo.RestUserEntity;
 import com.eastbabel.bo.base.PagedResource;
 import com.eastbabel.bo.notify.NotifyBo;
 import com.eastbabel.bo.question.CreateQuestionReq;
 import com.eastbabel.bo.question.QuestionBo;
 import com.eastbabel.dao.entity.Notify;
 import com.eastbabel.dao.entity.Question;
+import com.eastbabel.dao.entity.SysUser;
 import com.eastbabel.dao.repository.QuestionRepository;
 import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.QuestionService;
@@ -113,9 +115,18 @@ public class QuestionServiceImpl implements QuestionService {
         questionBo.setId(question.getId());
         questionBo.setQuestion(question.getQuestion());
         questionBo.setAnswer(question.getAnswer());
-        questionBo.setCreator(question.getCreatorUser());
+        questionBo.setActive(question.getActive());
+        SysUser creatorUser = question.getCreatorUser();
+        RestUserEntity restCreatorUser = new RestUserEntity();
+        restCreatorUser.setId(creatorUser.getId());
+        restCreatorUser.setUsername(creatorUser.getUserName());
+        questionBo.setCreatorUser(restCreatorUser);
         questionBo.setCreateTime(question.getCreateTime());
-        questionBo.setUpdater(question.getUpdaterUser());
+        SysUser updateUser = question.getUpdaterUser();
+        RestUserEntity restUpdateUser = new RestUserEntity();
+        restUpdateUser.setId(updateUser.getId());
+        restUpdateUser.setUsername(updateUser.getUserName());
+        questionBo.setUpdaterUser(restUpdateUser);
         questionBo.setUpdateTime(question.getUpdateTime());
         return questionBo;
     }

@@ -40,7 +40,7 @@ public class SysUser{
      * 创建人
      */
     @Basic
-    @Column(name = "creator", insertable = false, updatable = false)
+    @Column(name = "creator")
     private Integer creator;
 
 
@@ -48,14 +48,14 @@ public class SysUser{
      * 创建时间
      */
     @Basic
-    @Column(name = "create_time", insertable = false, updatable = false)
+    @Column(name = "create_time")
     private LocalDateTime createTime;
 
     /**
      * 更新人
      */
     @Basic
-    @Column(name = "updater", insertable = false, updatable = false)
+    @Column(name = "updater")
     private Integer updater;
 
 
@@ -63,7 +63,15 @@ public class SysUser{
      * 更新时间
      */
     @Basic
-    @Column(name = "update_time", insertable = false, updatable = false)
+    @Column(name = "update_time")
     private LocalDateTime updateTime;
+
+    @Basic
+    @Column(name = "deleter")
+    private Integer deleter;
+
+    @Basic
+    @Column(name = "delete_time")
+    private LocalDateTime deleteTime;
 
 }

@@ -25,7 +25,9 @@ public class ArticleCatalog extends BaseEntity {
     @Basic
     @Column(name = "built_in")
     private Integer builtIn;
-    @OneToMany(mappedBy = "catId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Article> articleList = new ArrayList<>();
+
+    @Basic
+    @Column(name = "status")
+    private Integer status;
 
 }

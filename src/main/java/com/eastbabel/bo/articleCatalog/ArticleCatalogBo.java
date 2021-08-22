@@ -20,6 +20,6 @@ public class ArticleCatalogBo extends RestEntity implements Serializable {
     private String catDesc;
     @ApiModelProperty("是否内置栏目")
     private Integer builtIn;
-
-    private List<Article> articleList = new ArrayList<>();
+    @ApiModelProperty("是否上架")
+    private Integer status;
 }

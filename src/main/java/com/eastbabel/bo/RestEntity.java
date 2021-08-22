@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 public class RestEntity implements Serializable {
 
     @ApiModelProperty("创建人")
-    private SysUser creator;
+    private RestUserEntity creatorUser;
     @ApiModelProperty("创建时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     @ApiModelProperty("修改人")
-    private SysUser updater;
+    private RestUserEntity updaterUser;
     @ApiModelProperty("修改时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

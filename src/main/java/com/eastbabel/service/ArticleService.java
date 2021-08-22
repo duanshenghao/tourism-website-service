@@ -17,7 +17,7 @@ public interface ArticleService {
 
     void deleteArticle(Integer id);
 
-    PagedResource<ArticleBo> getArticles(Integer articleStatus, Integer page, Integer size);
+    PagedResource<ArticleBo> getArticles(Integer articleStatus,Integer catId, Integer page, Integer size);
 
     void updateArticleStatus(Integer id, Integer articleStatus);
 }

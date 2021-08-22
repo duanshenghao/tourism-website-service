@@ -36,4 +36,8 @@ public class Article extends BaseEntity {
     @Basic
     @Column(name = "article_status")
     private Integer articleStatus;
+    @ManyToOne
+    @JoinColumn(name="cat_id",insertable = false,updatable = false)
+    private ArticleCatalog articleCatalog;
+
 }

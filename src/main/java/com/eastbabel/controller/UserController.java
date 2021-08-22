@@ -2,10 +2,15 @@ package com.eastbabel.controller;
 
 import com.eastbabel.bo.base.PagedResource;
 import com.eastbabel.bo.base.ResponseEntity;
+import com.eastbabel.bo.login.LoginReq;
+import com.eastbabel.bo.login.TokenBo;
+import com.eastbabel.bo.login.UpdPasswdEntity;
 import com.eastbabel.bo.question.CreateQuestionReq;
 import com.eastbabel.bo.question.QuestionBo;
 import com.eastbabel.bo.user.CreateUserReq;
+import com.eastbabel.bo.user.EditUser;
 import com.eastbabel.bo.user.SysUserBo;
+import com.eastbabel.dao.entity.SysUser;
 import com.eastbabel.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,12 +32,6 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @GetMapping("user")
-    @ApiOperation("获取所有用户(test)")
-    public ResponseEntity<List<SysUserBo>> getUser() {
-        List<SysUserBo> user = userService.getUser();
-        return ResponseEntity.ok(user);
-    }
 
     @PutMapping("user")
     @ApiOperation("新增用户")
@@ -50,7 +50,7 @@ public class UserController {
     @PutMapping("user/{id}/password")
     @ApiOperation("重置用户密码(账号管理员用)")
     public ResponseEntity<String> updateAdminPassword(@PathVariable("id") Integer id) {
-        String password = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        String password = "000000";
         userService.updateAdminPassword(id, password);
         return ResponseEntity.ok(password);
     }
@@ -71,8 +71,8 @@ public class UserController {
 
     @PostMapping("user")
     @ApiOperation("编辑用户信息")
-    public ResponseEntity<String> editUser(@Validated @RequestBody SysUserBo sysUserBo) {
-        userService.editUser(sysUserBo);
+    public ResponseEntity<String> editUser(@Validated @RequestBody EditUser editUser) {
+        userService.editUser(editUser);
         return ResponseEntity.ok("success");
     }
 
@@ -81,6 +81,13 @@ public class UserController {
     public ResponseEntity<String> updateNotifyStatus(@PathVariable("id") Integer id,
                                                      @PathVariable("activeStatus") Integer activeStatus) {
         userService.updateUserStatus(id, activeStatus);
+        return ResponseEntity.succeed();
+    }
+
+    @PostMapping("updPassword")
+    @ApiOperation("密码修改")
+    public ResponseEntity<String> updPassword(@RequestBody @Valid UpdPasswdEntity updPasswdEntity) {
+        userService.updPassword(updPasswdEntity);
         return ResponseEntity.succeed();
     }
 

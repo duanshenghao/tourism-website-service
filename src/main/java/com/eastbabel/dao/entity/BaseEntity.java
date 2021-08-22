@@ -16,47 +16,47 @@ public class BaseEntity implements Serializable {
      * 创建人
      */
     @ManyToOne
-    @JoinColumn(name = "creator",referencedColumnName = "id")
+    @JoinColumn(name = "creator",referencedColumnName = "id",insertable = false,updatable = false)
     private SysUser creatorUser;
 
     @Basic
-    @Column(name = "creator", insertable = false, updatable = false)
+    @Column(name = "creator")
     private Integer creator;
 
     /**
      * 创建时间
      */
     @Basic
-    @Column(name = "create_time", insertable = false, updatable = false)
+    @Column(name = "create_time")
     private LocalDateTime createTime;
 
     /**
      * 更新人
      */
     @ManyToOne
-    @JoinColumn(name = "updater",referencedColumnName = "id")
+    @JoinColumn(name = "updater",referencedColumnName = "id",insertable = false,updatable = false)
     private SysUser updaterUser;
 
     @Basic
-    @Column(name = "updater", insertable = false, updatable = false)
+    @Column(name = "updater")
     private Integer updater;
 
     /**
      * 更新时间
      */
     @Basic
-    @Column(name = "update_time", insertable = false, updatable = false)
+    @Column(name = "update_time")
     private LocalDateTime updateTime;
 
     /**
      * 删除人
      */
     @Basic
-    @Column(name = "deleter", insertable = false, updatable = false)
+    @Column(name = "deleter")
     private Integer deleter;
 
     @ManyToOne
-    @JoinColumn(name = "deleter",referencedColumnName = "id")
+    @JoinColumn(name = "deleter",referencedColumnName = "id",insertable = false,updatable = false)
     private SysUser deleteUser;
 
     /**

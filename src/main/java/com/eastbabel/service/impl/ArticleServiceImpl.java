@@ -4,15 +4,14 @@ import com.eastbabel.aop.WebContext;
 import com.eastbabel.bo.article.ArticleBo;
 import com.eastbabel.bo.article.CreateArticleReq;
 import com.eastbabel.bo.base.PagedResource;
-import com.eastbabel.bo.question.QuestionBo;
 import com.eastbabel.dao.entity.Article;
-import com.eastbabel.dao.entity.ArticleCatalog;
-import com.eastbabel.dao.entity.Question;
-import com.eastbabel.dao.repository.ArticleCatalogRepository;
+import com.eastbabel.dao.entity.SysUser;
 import com.eastbabel.dao.repository.ArticleRepository;
 import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.ArticleService;
+import com.eastbabel.utils.QiniuUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +33,8 @@ public class ArticleServiceImpl implements ArticleService {
     private ArticleRepository articleRepository;
     @Autowired
     private WebContext webContext;
+    @Value("${qiniu.domain}")
+    private String domain;
 
     @Override
     public List<ArticleBo> getArticle() {
@@ -76,6 +77,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void editArticle(ArticleBo articleBo) {
         Article article = articleRepository.findById(articleBo.getId()).orElseThrow(() -> new CustomException("文章不存在"));
+        if(!(articleBo.getImgKey().equals(article.getImgKey()))){
+            QiniuUtils.deleteImage(article.getImgKey());
+        }
         article.setTitle(articleBo.getTitle());
         article.setImgKey(articleBo.getImgKey());
         article.setSummary(articleBo.getSummary());
@@ -96,13 +100,16 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public PagedResource<ArticleBo> getArticles(Integer articleStatus, Integer page, Integer size) {
+    public PagedResource<ArticleBo> getArticles(Integer articleStatus,Integer catId, Integer page, Integer size) {
         Sort seq = Sort.by("updateTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<Article> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (articleStatus != null) {
                 predicates.add(criteriaBuilder.equal(root.get("articleStatus"), articleStatus));
+            }
+            if(catId != null){
+                predicates.add(criteriaBuilder.equal(root.get("catId"), catId));
             }
             predicates.add(criteriaBuilder.isNull(root.get("deleter")));
             return criteriaBuilder.and(predicates.toArray(predicates.toArray(new Predicate[0])));
@@ -127,12 +134,22 @@ public class ArticleServiceImpl implements ArticleService {
         articleBo.setCatId(article.getCatId());
         articleBo.setTitle(article.getTitle());
         articleBo.setImgKey(article.getImgKey());
+        articleBo.setImageUrl(domain+article.getImgKey());
         articleBo.setSummary(article.getSummary());
         articleBo.setContent(article.getContent());
-        articleBo.setCreator(article.getCreatorUser());
+        SysUser creatorUser = article.getCreatorUser();
+        if(creatorUser!=null){
+            articleBo.setCreatorId(creatorUser.getId());
+            articleBo.setCreatorName(creatorUser.getUserName());
+        }
         articleBo.setCreateTime(article.getCreateTime());
-        articleBo.setUpdater(article.getUpdaterUser());
+        SysUser updateUser = article.getUpdaterUser();
+        if(updateUser!=null){
+            articleBo.setUpdaterId(updateUser.getId());
+            articleBo.setUpdaterName(updateUser.getUserName());
+        }
         articleBo.setUpdateTime(article.getUpdateTime());
+        articleBo.setCatName(article.getArticleCatalog().getCatName());
         return articleBo;
     }
 

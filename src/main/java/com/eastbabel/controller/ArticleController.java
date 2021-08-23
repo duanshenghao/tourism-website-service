@@ -28,14 +28,16 @@ public class ArticleController {
     @ApiOperation("获取文章列表(分页)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "articleStatus", value = "文章状态"),
+            @ApiImplicitParam(name = "catId", value = "栏目Id"),
             @ApiImplicitParam(name = "page", value = "页数"),
             @ApiImplicitParam(name = "size", value = "数据条数")
     })
     public ResponseEntity<PagedResource<ArticleBo>> getArticles(
             @RequestParam(value = "articleStatus", required = false) Integer articleStatus,
+            @RequestParam(value = "catId", required = false) Integer catId,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(articleService.getArticles(articleStatus, page, size));
+        return ResponseEntity.ok(articleService.getArticles(articleStatus,catId, page, size));
     }
 
     @GetMapping("article/list")

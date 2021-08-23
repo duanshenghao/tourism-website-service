@@ -1,6 +1,7 @@
 package com.eastbabel.bo.article;
 
 import com.eastbabel.bo.RestEntity;
+import com.eastbabel.dao.entity.ArticleCatalog;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -21,4 +22,8 @@ public class ArticleBo extends RestEntity implements Serializable {
     private String summary;
     @ApiModelProperty("内容")
     private String content;
+    @ApiModelProperty("图片地址")
+    private String imageUrl;
+    @ApiModelProperty("栏目名称")
+    private String catName;
 }

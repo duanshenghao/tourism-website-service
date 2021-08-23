@@ -2,11 +2,10 @@ package com.eastbabel.service.impl;
 
 import com.eastbabel.aop.WebContext;
 import com.eastbabel.bo.base.PagedResource;
-import com.eastbabel.bo.notify.NotifyBo;
 import com.eastbabel.bo.question.CreateQuestionReq;
 import com.eastbabel.bo.question.QuestionBo;
-import com.eastbabel.dao.entity.Notify;
 import com.eastbabel.dao.entity.Question;
+import com.eastbabel.dao.entity.SysUser;
 import com.eastbabel.dao.repository.QuestionRepository;
 import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.QuestionService;
@@ -113,9 +112,18 @@ public class QuestionServiceImpl implements QuestionService {
         questionBo.setId(question.getId());
         questionBo.setQuestion(question.getQuestion());
         questionBo.setAnswer(question.getAnswer());
-        questionBo.setCreator(question.getCreatorUser());
+        questionBo.setActive(question.getActive());
+        SysUser creatorUser = question.getCreatorUser();
+        if(creatorUser!=null){
+            questionBo.setCreatorId(creatorUser.getId());
+            questionBo.setCreatorName(creatorUser.getUserName());
+        }
         questionBo.setCreateTime(question.getCreateTime());
-        questionBo.setUpdater(question.getUpdaterUser());
+        SysUser updateUser = question.getUpdaterUser();
+        if(updateUser!=null){
+            questionBo.setUpdaterId(updateUser.getId());
+            questionBo.setUpdaterName(updateUser.getUserName());
+        }
         questionBo.setUpdateTime(question.getUpdateTime());
         return questionBo;
     }

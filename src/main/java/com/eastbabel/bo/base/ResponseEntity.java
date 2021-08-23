@@ -44,6 +44,13 @@ public class ResponseEntity<T> implements Serializable {
         return new ResponseEntity<T>(data);
     }
 
+    public static ResponseEntity error(String message){
+        ResponseEntity responseEntity = new ResponseEntity();
+        responseEntity.setStatus(500);
+        responseEntity.setMessage(message);
+        return responseEntity;
+    }
+
     @ApiModelProperty("实例名称")
     public String getInstance() {
         return RuntimeUtils.getHostName();

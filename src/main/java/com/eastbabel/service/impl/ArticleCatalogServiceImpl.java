@@ -1,16 +1,15 @@
 package com.eastbabel.service.impl;
 
 import com.eastbabel.aop.WebContext;
-import com.eastbabel.bo.article.ArticleBo;
 import com.eastbabel.bo.articleCatalog.ArticleCatalogBo;
 import com.eastbabel.bo.articleCatalog.CreateArticleCatalogReq;
+import com.eastbabel.bo.articleCatalog.EditArticleCatalog;
 import com.eastbabel.bo.base.PagedResource;
-import com.eastbabel.dao.entity.Article;
 import com.eastbabel.dao.entity.ArticleCatalog;
+import com.eastbabel.dao.entity.SysUser;
 import com.eastbabel.dao.repository.ArticleCatalogRepository;
 import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.ArticleCatalogService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +40,7 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
             articleCatalogBo.setCatName(articleCatalog.getCatName());
             articleCatalogBo.setCatDesc(articleCatalog.getCatDesc());
             articleCatalogBo.setBuiltIn(articleCatalog.getBuiltIn());
-            articleCatalogBo.setArticleList(articleCatalog.getArticleList());
+            articleCatalogBo.setStatus(articleCatalog.getStatus());
             return articleCatalogBo;
         }).collect(Collectors.toList());
     }
@@ -52,7 +51,8 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         ArticleCatalog articleCatalog = new ArticleCatalog();
         articleCatalog.setCatName(createArticleCatalogReq.getCatName());
         articleCatalog.setCatDesc(createArticleCatalogReq.getCatDesc());
-        articleCatalog.setBuiltIn(createArticleCatalogReq.getBuiltIn());
+        articleCatalog.setBuiltIn(1);
+        articleCatalog.setStatus(createArticleCatalogReq.getStatus());
         articleCatalog.setCreator(webContext.getUserId());
         articleCatalog.setCreateTime(now);
         articleCatalog.setUpdater(webContext.getUserId());
@@ -62,16 +62,17 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         bo.setId(articleCatalog.getId());
         bo.setCatName(createArticleCatalogReq.getCatName());
         bo.setCatDesc(createArticleCatalogReq.getCatDesc());
-        bo.setBuiltIn(createArticleCatalogReq.getBuiltIn());
+        bo.setBuiltIn(1);
+        bo.setStatus(createArticleCatalogReq.getStatus());
         return bo;
     }
 
     @Override
-    public void editArticleCatalog(ArticleCatalogBo articleCatalogBo) {
+    public void editArticleCatalog(EditArticleCatalog articleCatalogBo) {
         ArticleCatalog articleCatalog = articleCatalogRepository.findById(articleCatalogBo.getId()).orElseThrow(() -> new CustomException("栏目不存在"));
         articleCatalog.setCatName(articleCatalogBo.getCatName());
         articleCatalog.setCatDesc(articleCatalogBo.getCatDesc());
-        articleCatalog.setBuiltIn(articleCatalogBo.getBuiltIn());
+        articleCatalog.setStatus(articleCatalogBo.getStatus());
         articleCatalog.setUpdater(webContext.getUserId());
         articleCatalog.setUpdateTime(LocalDateTime.now());
         articleCatalogRepository.saveAndFlush(articleCatalog);
@@ -87,13 +88,16 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
     }
 
     @Override
-    public PagedResource<ArticleCatalogBo> getArticleCatalogs(Integer builtIn, Integer page, Integer size) {
+    public PagedResource<ArticleCatalogBo> getArticleCatalogs(Integer builtIn,Integer status, Integer page, Integer size) {
         Sort seq = Sort.by("updateTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<ArticleCatalog> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (builtIn != null) {
                 predicates.add(criteriaBuilder.equal(root.get("builtIn"), builtIn));
+            }
+            if(status != null){
+                predicates.add(criteriaBuilder.equal(root.get("status"), status));
             }
             predicates.add(criteriaBuilder.isNull(root.get("deleter")));
             return criteriaBuilder.and(predicates.toArray(predicates.toArray(new Predicate[0])));
@@ -104,9 +108,9 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
     }
 
     @Override
-    public void updateArticleCatalogStatus(Integer id, Integer builtIn) {
+    public void updateArticleCatalogStatus(Integer id, Integer status) {
         ArticleCatalog articleCatalog = articleCatalogRepository.findById(id).orElseThrow(() -> new CustomException("文章栏目不存在"));
-        articleCatalog.setBuiltIn(builtIn);
+        articleCatalog.setStatus(status);
         articleCatalog.setUpdater(webContext.getUserId());
         articleCatalog.setUpdateTime(LocalDateTime.now());
     }
@@ -116,10 +120,17 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         articleCatalogBo.setId(articleCatalog.getId());
         articleCatalogBo.setCatName(articleCatalog.getCatName());
         articleCatalogBo.setCatDesc(articleCatalog.getCatDesc());
-        articleCatalogBo.setArticleList(articleCatalog.getArticleList());
-        articleCatalogBo.setCreator(articleCatalog.getCreatorUser());
+        SysUser creatorUser = articleCatalog.getCreatorUser();
+        if(creatorUser!=null){
+            articleCatalogBo.setCreatorId(creatorUser.getId());
+            articleCatalogBo.setCreatorName(creatorUser.getUserName());
+        }
         articleCatalogBo.setCreateTime(articleCatalog.getCreateTime());
-        articleCatalogBo.setUpdater(articleCatalog.getUpdaterUser());
+        SysUser updateUser = articleCatalog.getUpdaterUser();
+        if(updateUser!=null){
+            articleCatalogBo.setUpdaterId(updateUser.getId());
+            articleCatalogBo.setUpdaterName(updateUser.getUserName());
+        }
         articleCatalogBo.setUpdateTime(articleCatalog.getUpdateTime());
         return articleCatalogBo;
     }

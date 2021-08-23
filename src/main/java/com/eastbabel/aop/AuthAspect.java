@@ -1,12 +1,12 @@
 package com.eastbabel.aop;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.eastbabel.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -32,23 +32,41 @@ public class AuthAspect {
     }
 
     @Before("requestMapping()")
-    public void doBeforeRequestMapping(JoinPoint joinPoint) {
+    public void doBeforeRequestMapping(JoinPoint joinPoint) throws Throwable  {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
         HttpServletRequest request = attributes.getRequest();
         String url = request.getRequestURI();
-        if(!(url.contains("list")||url.contains("login")||url.contains("notify/add"))){
-            String token = request.getHeader("Authorization");
-            TokenUtil.verify(token,adminTokenSalt);
-            Integer userId = TokenUtil.getUserId(token);
-            webContext.setUserId(userId);
-            webContext.setToken(token);
+        String token = request.getHeader("Authorization");
+        if(url.contains("login")){
+
+        }else{
+            if(!(url.contains("list")||url.contains("notify/add"))){
+                TokenUtil.verify(token,adminTokenSalt);
+                Integer userId = TokenUtil.getUserId(token);
+                webContext.setUserId(userId);
+                webContext.setToken(token);
+            }
         }
+
     }
+
 
     @After("requestMapping()")
     public void doAfterRequestMapping(JoinPoint joinPoint) {
         webContext.clear();
+    }
+
+    /**
+     * 返回数据
+     * @param retVal
+     * @return
+     */
+    private String postHandle(Object retVal) {
+        if(null == retVal){
+            return "";
+        }
+        return JSON.toJSONString(retVal);
     }
 
 }

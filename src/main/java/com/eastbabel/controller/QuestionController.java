@@ -65,7 +65,7 @@ public class QuestionController {
     }
 
     @PutMapping("question/{id}/status/{active}")
-    @ApiOperation("修改轮播图状态")
+    @ApiOperation("修改问题状态")
     public ResponseEntity<String> updateQuestionStatus(@PathVariable("id") Integer id,
                                                           @PathVariable("active") Integer active) {
         questionService.updateQuestionStatus(id, active);

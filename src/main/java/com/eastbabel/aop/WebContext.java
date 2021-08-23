@@ -36,11 +36,11 @@ public class WebContext {
     }
 
     public void setToken(String token) {
-        this.put("token", token);
+        this.put(TOKEN, token);
     }
 
     public String getToken() {
-        return (String)this.get("token");
+        return (String)this.get(TOKEN);
     }
 
     public void clear() {
@@ -48,10 +48,10 @@ public class WebContext {
     }
 
     public Integer getUserId() {
-        return (Integer)this.get("user_id");
+        return (Integer)this.get(USER_ID);
     }
 
     public void setUserId(Integer userId) {
-        this.put("user_id", userId);
+        this.put(USER_ID, userId);
     }
 }

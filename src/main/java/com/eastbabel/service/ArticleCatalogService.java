@@ -4,7 +4,9 @@ package com.eastbabel.service;
 import com.eastbabel.bo.article.ArticleBo;
 import com.eastbabel.bo.articleCatalog.ArticleCatalogBo;
 import com.eastbabel.bo.articleCatalog.CreateArticleCatalogReq;
+import com.eastbabel.bo.articleCatalog.EditArticleCatalog;
 import com.eastbabel.bo.base.PagedResource;
+import com.eastbabel.dao.entity.ArticleCatalog;
 
 import java.util.List;
 
@@ -13,11 +15,11 @@ public interface ArticleCatalogService {
 
     ArticleCatalogBo createArticleCatalog(CreateArticleCatalogReq createArticleCatalogReq);
 
-    void editArticleCatalog(ArticleCatalogBo ArticleCatalogBo);
+    void editArticleCatalog(EditArticleCatalog editArticleCatalog);
 
     void deleteArticleCatalog(Integer id);
 
-    PagedResource<ArticleCatalogBo> getArticleCatalogs(Integer builtIn, Integer page, Integer size);
+    PagedResource<ArticleCatalogBo> getArticleCatalogs(Integer builtIn,Integer status, Integer page, Integer size);
 
-    void updateArticleCatalogStatus(Integer id, Integer builtIn);
+    void updateArticleCatalogStatus(Integer id, Integer status);
 }

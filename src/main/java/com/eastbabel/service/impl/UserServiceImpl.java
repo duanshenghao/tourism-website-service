@@ -1,14 +1,11 @@
 package com.eastbabel.service.impl;
 
 import com.eastbabel.aop.WebContext;
-import com.eastbabel.bo.RestUserEntity;
 import com.eastbabel.bo.base.PagedResource;
 import com.eastbabel.bo.login.UpdPasswdEntity;
-import com.eastbabel.bo.question.QuestionBo;
 import com.eastbabel.bo.user.CreateUserReq;
 import com.eastbabel.bo.user.EditUser;
 import com.eastbabel.bo.user.SysUserBo;
-import com.eastbabel.dao.entity.Question;
 import com.eastbabel.dao.entity.SysUser;
 import com.eastbabel.dao.repository.UserRepository;
 import com.eastbabel.exception.CustomException;
@@ -24,11 +21,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -156,18 +151,14 @@ public class UserServiceImpl implements UserService {
         sysUserBo.setActiveStatus(sysUser.getActiveStatus());
         if(sysUser.getCreator()!=null && sysUser.getCreator()!=0){
             SysUser creatorUser = userRepository.findById(sysUser.getCreator()).orElseThrow(() -> new CustomException("该用户不存在"));
-            RestUserEntity userEntity = new RestUserEntity();
-            userEntity.setId(creatorUser.getId());
-            userEntity.setUsername(creatorUser.getUserName());
-            sysUserBo.setCreatorUser(userEntity);
+            sysUserBo.setCreatorId(creatorUser.getId());
+            sysUserBo.setCreatorName(creatorUser.getUserName());
         }
         sysUserBo.setCreateTime(sysUser.getCreateTime());
         if(sysUser.getUpdater()!=null && sysUser.getUpdater()!=0){
             SysUser updaterUser = userRepository.findById(sysUser.getUpdater()).orElseThrow(() -> new CustomException("该用户不存在"));
-            RestUserEntity userEntity = new RestUserEntity();
-            userEntity.setId(updaterUser.getId());
-            userEntity.setUsername(updaterUser.getUserName());
-            sysUserBo.setUpdaterUser(userEntity);
+            sysUserBo.setUpdaterId(updaterUser.getId());
+            sysUserBo.setUpdaterName(updaterUser.getUserName());
         }
         sysUserBo.setUpdateTime(sysUser.getUpdateTime());
         return sysUserBo;

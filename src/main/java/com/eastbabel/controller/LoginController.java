@@ -4,6 +4,7 @@ package com.eastbabel.controller;
 import com.eastbabel.bo.base.ResponseEntity;
 import com.eastbabel.bo.login.LoginReq;
 import com.eastbabel.bo.login.TokenBo;
+import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,8 +26,14 @@ public class LoginController {
 
     @PostMapping("login")
     @ApiOperation("管理员登陆")
-    public ResponseEntity<TokenBo> adminLogin(@RequestBody @Valid LoginReq adminLoginReq) {
-        TokenBo tokenBo = loginService.adminLogin(adminLoginReq.getAccount(), adminLoginReq.getPassword());
+    public ResponseEntity<?> adminLogin(@RequestBody @Valid LoginReq adminLoginReq) {
+        TokenBo tokenBo = null;
+        try {
+            tokenBo = loginService.adminLogin(adminLoginReq.getAccount(), adminLoginReq.getPassword());
+        } catch (CustomException e) {
+
+            return ResponseEntity.error(e.getMessage());
+        }
         return ResponseEntity.ok(tokenBo);
     }
 

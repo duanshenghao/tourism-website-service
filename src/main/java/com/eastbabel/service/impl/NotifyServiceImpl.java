@@ -1,7 +1,6 @@
 package com.eastbabel.service.impl;
 
 import com.eastbabel.aop.WebContext;
-import com.eastbabel.bo.RestUserEntity;
 import com.eastbabel.bo.base.PagedResource;
 import com.eastbabel.bo.email.ToEmail;
 import com.eastbabel.bo.notify.CreateNotifyReq;
@@ -116,16 +115,16 @@ public class NotifyServiceImpl implements NotifyService {
         notifyBo.setEmail(notify.getEmail());
         notifyBo.setStatus(notify.getStatus());
         SysUser creatorUser = notify.getCreatorUser();
-        RestUserEntity restCreatorUser = new RestUserEntity();
-        restCreatorUser.setId(creatorUser.getId());
-        restCreatorUser.setUsername(creatorUser.getUserName());
-        notifyBo.setCreatorUser(restCreatorUser);
+        if(creatorUser!=null){
+            notifyBo.setCreatorId(creatorUser.getId());
+            notifyBo.setCreatorName(creatorUser.getUserName());
+        }
         notifyBo.setCreateTime(notify.getCreateTime());
         SysUser updateUser = notify.getUpdaterUser();
-        RestUserEntity restUpdateUser = new RestUserEntity();
-        restUpdateUser.setId(updateUser.getId());
-        restUpdateUser.setUsername(updateUser.getUserName());
-        notifyBo.setUpdaterUser(restUpdateUser);
+        if(updateUser!=null){
+            notifyBo.setUpdaterId(updateUser.getId());
+            notifyBo.setUpdaterName(updateUser.getUserName());
+        }
         notifyBo.setUpdateTime(notify.getUpdateTime());
         return notifyBo;
     }

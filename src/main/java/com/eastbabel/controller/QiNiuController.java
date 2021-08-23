@@ -1,5 +1,6 @@
 package com.eastbabel.controller;
 
+import com.eastbabel.bo.Image.ImageEntity;
 import com.eastbabel.bo.base.ResponseEntity;
 import com.eastbabel.utils.PictureUtil;
 import com.eastbabel.utils.QiniuUtils;
@@ -7,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -36,5 +38,12 @@ public class QiNiuController {
             return ResponseEntity.ok(path);
         }
         return ResponseEntity.ok("上传失败");
+    }
+
+    @ApiOperation("图片删除")
+    @RequestMapping(value = "/delImage",method = RequestMethod.POST)
+    public ResponseEntity delImage(@Validated @RequestBody ImageEntity imageEntity){
+        QiniuUtils.deleteImage(imageEntity.getImageKey());
+        return ResponseEntity.succeed();
     }
 }

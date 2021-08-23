@@ -22,7 +22,8 @@ public class ArticleBo extends RestEntity implements Serializable {
     private String summary;
     @ApiModelProperty("内容")
     private String content;
-
+    @ApiModelProperty("图片地址")
+    private String imageUrl;
     @ApiModelProperty("栏目名称")
     private String catName;
 }

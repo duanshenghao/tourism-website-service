@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
+import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
@@ -81,5 +82,23 @@ public class QiniuUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static int deleteImage(String fileName){
+        //构造一个带指定Zone对象的配置类
+        Configuration cfg = new Configuration(Zone.zone0());
+        String key = fileName;
+        Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
+        BucketManager bucketManager = new BucketManager(auth, cfg);
+        try {
+            Response delete = bucketManager.delete(BUCKETNAME, key);
+            return delete.statusCode;
+        } catch (QiniuException ex) {
+            //如果遇到异常，说明删除失败
+            ex.printStackTrace();
+            System.err.println(ex.code());
+            System.err.println(ex.response.toString());
+        }
+        return -1;
     }
 }

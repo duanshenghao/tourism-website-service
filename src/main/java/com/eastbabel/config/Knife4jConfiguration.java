@@ -23,8 +23,8 @@ public class Knife4jConfiguration {
     public Docket defaultApi2() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("东方建木科技有限公司-官网")
-                        .description("东方建木科技有限公司-官网后端服务")
+                        .title("东方智慧游官网")
+                        .description("东方智慧游-官网后端服务")
                         .contact(new Contact("段生浩", null, "duanshenghao@eastbabel.cn"))
                         .version("1.0")
                         .build())

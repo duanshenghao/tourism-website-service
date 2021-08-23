@@ -1,7 +1,6 @@
 package com.eastbabel.service.impl;
 
 import com.eastbabel.aop.WebContext;
-import com.eastbabel.bo.RestUserEntity;
 import com.eastbabel.bo.article.ArticleBo;
 import com.eastbabel.bo.article.CreateArticleReq;
 import com.eastbabel.bo.base.PagedResource;
@@ -10,6 +9,7 @@ import com.eastbabel.dao.entity.SysUser;
 import com.eastbabel.dao.repository.ArticleRepository;
 import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.ArticleService;
+import com.eastbabel.utils.QiniuUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -77,6 +77,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void editArticle(ArticleBo articleBo) {
         Article article = articleRepository.findById(articleBo.getId()).orElseThrow(() -> new CustomException("文章不存在"));
+        if(!(articleBo.getImgKey().equals(article.getImgKey()))){
+            QiniuUtils.deleteImage(article.getImgKey());
+        }
         article.setTitle(articleBo.getTitle());
         article.setImgKey(articleBo.getImgKey());
         article.setSummary(articleBo.getSummary());
@@ -130,20 +133,21 @@ public class ArticleServiceImpl implements ArticleService {
         articleBo.setId(article.getId());
         articleBo.setCatId(article.getCatId());
         articleBo.setTitle(article.getTitle());
-        articleBo.setImgKey(domain+article.getImgKey());
+        articleBo.setImgKey(article.getImgKey());
+        articleBo.setImageUrl(domain+article.getImgKey());
         articleBo.setSummary(article.getSummary());
         articleBo.setContent(article.getContent());
         SysUser creatorUser = article.getCreatorUser();
-        RestUserEntity restCreatorUser = new RestUserEntity();
-        restCreatorUser.setId(creatorUser.getId());
-        restCreatorUser.setUsername(creatorUser.getUserName());
-        articleBo.setCreatorUser(restCreatorUser);
+        if(creatorUser!=null){
+            articleBo.setCreatorId(creatorUser.getId());
+            articleBo.setCreatorName(creatorUser.getUserName());
+        }
         articleBo.setCreateTime(article.getCreateTime());
         SysUser updateUser = article.getUpdaterUser();
-        RestUserEntity restUpdateUser = new RestUserEntity();
-        restUpdateUser.setId(updateUser.getId());
-        restUpdateUser.setUsername(updateUser.getUserName());
-        articleBo.setUpdaterUser(restUpdateUser);
+        if(updateUser!=null){
+            articleBo.setUpdaterId(updateUser.getId());
+            articleBo.setUpdaterName(updateUser.getUserName());
+        }
         articleBo.setUpdateTime(article.getUpdateTime());
         articleBo.setCatName(article.getArticleCatalog().getCatName());
         return articleBo;

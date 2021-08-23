@@ -11,7 +11,6 @@ public class CreateUserReq implements Serializable {
     private static final long serialVersionUID = 3049933153320066324L;
     @ApiModelProperty("账号")
     private String username;
-    private String password;
     @ApiModelProperty("邮箱")
     private String email;
 }

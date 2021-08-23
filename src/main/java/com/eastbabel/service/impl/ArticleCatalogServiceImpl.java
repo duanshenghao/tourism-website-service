@@ -1,19 +1,15 @@
 package com.eastbabel.service.impl;
 
 import com.eastbabel.aop.WebContext;
-import com.eastbabel.bo.RestUserEntity;
-import com.eastbabel.bo.article.ArticleBo;
 import com.eastbabel.bo.articleCatalog.ArticleCatalogBo;
 import com.eastbabel.bo.articleCatalog.CreateArticleCatalogReq;
 import com.eastbabel.bo.articleCatalog.EditArticleCatalog;
 import com.eastbabel.bo.base.PagedResource;
-import com.eastbabel.dao.entity.Article;
 import com.eastbabel.dao.entity.ArticleCatalog;
 import com.eastbabel.dao.entity.SysUser;
 import com.eastbabel.dao.repository.ArticleCatalogRepository;
 import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.ArticleCatalogService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -125,16 +121,16 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         articleCatalogBo.setCatName(articleCatalog.getCatName());
         articleCatalogBo.setCatDesc(articleCatalog.getCatDesc());
         SysUser creatorUser = articleCatalog.getCreatorUser();
-        RestUserEntity restCreatorUser = new RestUserEntity();
-        restCreatorUser.setId(creatorUser.getId());
-        restCreatorUser.setUsername(creatorUser.getUserName());
-        articleCatalogBo.setCreatorUser(restCreatorUser);
+        if(creatorUser!=null){
+            articleCatalogBo.setCreatorId(creatorUser.getId());
+            articleCatalogBo.setCreatorName(creatorUser.getUserName());
+        }
         articleCatalogBo.setCreateTime(articleCatalog.getCreateTime());
         SysUser updateUser = articleCatalog.getUpdaterUser();
-        RestUserEntity restUpdateUser = new RestUserEntity();
-        restUpdateUser.setId(updateUser.getId());
-        restUpdateUser.setUsername(updateUser.getUserName());
-        articleCatalogBo.setUpdaterUser(restUpdateUser);
+        if(updateUser!=null){
+            articleCatalogBo.setUpdaterId(updateUser.getId());
+            articleCatalogBo.setUpdaterName(updateUser.getUserName());
+        }
         articleCatalogBo.setUpdateTime(articleCatalog.getUpdateTime());
         return articleCatalogBo;
     }

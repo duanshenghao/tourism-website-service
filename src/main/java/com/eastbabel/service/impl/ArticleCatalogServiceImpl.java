@@ -51,8 +51,12 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         ArticleCatalog articleCatalog = new ArticleCatalog();
         articleCatalog.setCatName(createArticleCatalogReq.getCatName());
         articleCatalog.setCatDesc(createArticleCatalogReq.getCatDesc());
-        articleCatalog.setBuiltIn(1);
-        articleCatalog.setStatus(createArticleCatalogReq.getStatus());
+        articleCatalog.setBuiltIn(0);
+        if(createArticleCatalogReq.getStatus()!=null){
+            articleCatalog.setStatus(createArticleCatalogReq.getStatus());
+        }else{
+            articleCatalog.setStatus(1);
+        }
         articleCatalog.setCreator(webContext.getUserId());
         articleCatalog.setCreateTime(now);
         articleCatalog.setUpdater(webContext.getUserId());

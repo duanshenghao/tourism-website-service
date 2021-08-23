@@ -32,13 +32,12 @@ public class QiNiuController {
     @ApiOperation("图片上传")
     @RequestMapping(value = "/image", method = RequestMethod.POST)
     public ResponseEntity postUserInforUpDate(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile) throws IOException {
-
-        // 用来获取其他参数
-//        MultipartHttpServletRequest params = ((MultipartHttpServletRequest) request);
-//        String name = params.getParameter("username");
+        int begin = multipartFile.getOriginalFilename().lastIndexOf(".");
+        int end = multipartFile.getOriginalFilename().length();
+        String type = multipartFile.getOriginalFilename().substring(begin,end);
         if (!multipartFile.isEmpty()) {
             FileInputStream inputStream = (FileInputStream) multipartFile.getInputStream();
-            String path = QiniuUtils.uploadQNImg(inputStream, "websiteImage/"+PictureUtil.generateRandomFilename()); // KeyUtil.genUniqueKey()生成图片的随机名
+            String path = QiniuUtils.uploadQNImg(inputStream, "websiteImage/"+PictureUtil.generateRandomFilename()+type); // KeyUtil.genUniqueKey()生成图片的随机名
             System.out.print("七牛云返回的图片链接:" + path);
             ImageRes imageRes = new ImageRes();
             imageRes.setImageKey(path);

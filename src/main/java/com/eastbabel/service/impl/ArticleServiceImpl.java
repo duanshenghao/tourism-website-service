@@ -59,7 +59,11 @@ public class ArticleServiceImpl implements ArticleService {
         article.setSummary(createArticleReq.getSummary());
         article.setContent(createArticleReq.getContent());
         article.setSeq(createArticleReq.getSeq());
-        article.setArticleStatus(createArticleReq.getArticleStatus());
+        if(createArticleReq.getArticleStatus()!=null){
+            article.setArticleStatus(createArticleReq.getArticleStatus());
+        }else{
+            article.setArticleStatus(1);
+        }
         article.setCreator(webContext.getUserId());
         article.setCreateTime(now);
         article.setUpdater(webContext.getUserId());
@@ -137,6 +141,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleBo.setImageUrl(domain+article.getImgKey());
         articleBo.setSummary(article.getSummary());
         articleBo.setContent(article.getContent());
+        articleBo.setArticleStatus(article.getArticleStatus());
         SysUser creatorUser = article.getCreatorUser();
         if(creatorUser!=null){
             articleBo.setCreatorId(creatorUser.getId());

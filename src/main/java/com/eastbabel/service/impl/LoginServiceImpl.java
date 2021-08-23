@@ -44,6 +44,7 @@ public class LoginServiceImpl implements LoginService {
         new CustomException("请联系管理员初始化密码").throwIf(StringUtils.isBlank(user.getPassword()));
         String securityPwd = PasswordUtil.encryption(password, user.getSalt());
         new CustomException("账号或密码错误").throwIf(!securityPwd.equals(user.getPassword()));
+        new CustomException("账号已冻结，请联系系统管理员").throwIf(user.getActiveStatus()==0);
         TokenBo token = TokenUtil.signTokens(user.getId(),adminTokenSalt, adminRefreshTokenSalt);
         webContext.setUserId(user.getId());
         webContext.setToken(token.getAuthToken());

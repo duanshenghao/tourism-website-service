@@ -10,6 +10,7 @@ import com.eastbabel.dao.repository.ArticleRepository;
 import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.ArticleService;
 import com.eastbabel.utils.QiniuUtils;
+import com.qiniu.util.Auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +38,35 @@ public class ArticleServiceImpl implements ArticleService {
     private WebContext webContext;
     @Value("${qiniu.domain}")
     private String domain;
+    @Value("${qiniu.ak}")
+    private String accessKey;
+    @Value("${qiniu.sk}")
+    private String secretKey;
 
     @Override
     public List<ArticleBo> getArticle() {
-        return articleRepository.findByDeleterIsNullAndArticleStatusOrderBySeqDesc(1).stream().map(article -> {
+        return articleRepository.findByDeleterIsNullAndArticleStatusOrderBySeqAsc(1).stream().map(article -> {
             ArticleBo articleBo = new ArticleBo();
             articleBo.setId(article.getId());
             articleBo.setTitle(article.getTitle());
             articleBo.setImgKey(article.getImgKey());
             articleBo.setSummary(article.getSummary());
             articleBo.setContent(article.getContent());
+            articleBo.setArticleStatus(article.getArticleStatus());
+            articleBo.setSeq(article.getSeq());
+            String fileName = article.getImgKey();
+            String domainOfBucket = domain;
+            String encodedFileName = null;
+            try {
+                encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
+            Auth auth = Auth.create(accessKey, secretKey);
+            long expireInSeconds = 31536000;
+            String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
+            articleBo.setImageUrl(finalUrl);
             return articleBo;
         }).collect(Collectors.toList());
     }
@@ -87,6 +109,8 @@ public class ArticleServiceImpl implements ArticleService {
         article.setTitle(articleBo.getTitle());
         article.setImgKey(articleBo.getImgKey());
         article.setSummary(articleBo.getSummary());
+        article.setSeq(articleBo.getSeq());
+        article.setArticleStatus(articleBo.getArticleStatus());
         article.setContent(articleBo.getContent());
         article.setUpdater(webContext.getUserId());
         article.setUpdateTime(LocalDateTime.now());
@@ -138,7 +162,19 @@ public class ArticleServiceImpl implements ArticleService {
         articleBo.setCatId(article.getCatId());
         articleBo.setTitle(article.getTitle());
         articleBo.setImgKey(article.getImgKey());
-        articleBo.setImageUrl(domain+article.getImgKey());
+        String fileName = article.getImgKey();
+        String domainOfBucket = domain;
+        String encodedFileName = null;
+        try {
+            encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
+        Auth auth = Auth.create(accessKey, secretKey);
+        long expireInSeconds = 31536000;
+        String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
+        articleBo.setImageUrl(finalUrl);
         articleBo.setSummary(article.getSummary());
         articleBo.setContent(article.getContent());
         articleBo.setArticleStatus(article.getArticleStatus());

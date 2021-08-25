@@ -14,4 +14,6 @@ public class EditArticleCatalog {
     private String catDesc;
     @ApiModelProperty("是否上架")
     private Integer status;
+    @ApiModelProperty("是否内置栏目")
+    private Integer builtIn;
 }

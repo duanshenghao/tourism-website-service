@@ -28,4 +28,6 @@ public class NotifyBo extends RestEntity implements Serializable {
 
     @ApiModelProperty("状态,0:刚垂询；1：已回复；2：已接单；3，已拒绝；4：回复失败")
     private Integer status;
+    @ApiModelProperty("备注")
+    private String remark;
 }

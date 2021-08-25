@@ -28,4 +28,6 @@ public class ArticleBo extends RestEntity implements Serializable {
     private String catName;
     @ApiModelProperty("文章状态")
     private Integer articleStatus;
+    @ApiModelProperty
+    private Integer seq;
 }

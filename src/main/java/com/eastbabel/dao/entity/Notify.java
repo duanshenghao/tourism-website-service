@@ -23,4 +23,6 @@ public class Notify extends BaseEntity {
     private String email;
 
     private Integer status;
+
+    private String remark;
 }

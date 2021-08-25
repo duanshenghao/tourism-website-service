@@ -40,6 +40,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionBo.setId(question.getId());
             questionBo.setQuestion(question.getQuestion());
             questionBo.setAnswer(question.getAnswer());
+            questionBo.setActive(question.getActive());
             return questionBo;
         }).collect(Collectors.toList());
     }
@@ -68,6 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(questionBo.getId()).orElseThrow(() -> new CustomException("问题不存在"));
         question.setQuestion(questionBo.getQuestion());
         question.setAnswer(questionBo.getAnswer());
+        question.setActive(questionBo.getActive());
         question.setUpdater(webContext.getUserId());
         question.setUpdateTime(LocalDateTime.now());
         questionRepository.saveAndFlush(question);

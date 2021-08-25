@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService {
         SysUser user = userRepository.findById(editUser.getId()).orElseThrow(() -> new CustomException("用户不存在"));
         user.setUserName(editUser.getUsername());
         user.setEmail(editUser.getEmail());
+        user.setActiveStatus(editUser.getActiveStatus());
         user.setUpdater(webContext.getUserId());
         user.setUpdateTime(LocalDateTime.now());
         userRepository.saveAndFlush(user);

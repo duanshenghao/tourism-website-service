@@ -14,4 +14,5 @@ public interface NotifyService {
 
     PagedResource<NotifyBo> getNotifys(Integer status, Integer page, Integer size);
 
+    void editNotify(NotifyBo notifyBo);
 }

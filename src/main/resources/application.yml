@@ -56,5 +56,5 @@ token:
 qiniu:
   ak: c-mzyuLiU647Y0LZMZ4x1QLIxQk3oUERyso0xdik
   sk: ZPlu5pGLOeIdP5AUzxlg0Hx4kphVxdvOOgAdiT3Z
-  bucketname: eastbabel-data
-  domain: http://qxo1gxby1.hb-bkt.clouddn.com/
+  bucketname: tourism-website
+  domain: http://qyc53wmks.hb-bkt.clouddn.com

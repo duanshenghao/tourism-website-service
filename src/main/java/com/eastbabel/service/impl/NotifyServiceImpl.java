@@ -105,6 +105,16 @@ public class NotifyServiceImpl implements NotifyService {
         return new PagedResource<>(collect, page, size, articlePage.getTotalElements());
     }
 
+    @Override
+    public void editNotify(NotifyBo notifyBo) {
+        Notify notify = notifyRepository.findById(notifyBo.getId()).orElseThrow(() -> new CustomException(""));
+        notify.setRemark(notifyBo.getRemark());
+        notify.setStatus(notifyBo.getStatus());
+        notify.setUpdater(webContext.getUserId());
+        notify.setUpdateTime(LocalDateTime.now());
+        notifyRepository.saveAndFlush(notify);
+    }
+
     private NotifyBo toNotifyBo(Notify notify){
         NotifyBo notifyBo = new NotifyBo();
         notifyBo.setId(notify.getId());

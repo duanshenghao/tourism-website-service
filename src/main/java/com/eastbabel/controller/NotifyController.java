@@ -5,6 +5,7 @@ import com.eastbabel.bo.base.ResponseEntity;
 import com.eastbabel.bo.email.ToEmail;
 import com.eastbabel.bo.notify.CreateNotifyReq;
 import com.eastbabel.bo.notify.NotifyBo;
+import com.eastbabel.bo.question.QuestionBo;
 import com.eastbabel.service.EmailService;
 import com.eastbabel.service.NotifyService;
 import com.eastbabel.utils.RandomValidateCodeUtil;
@@ -73,6 +74,13 @@ public class NotifyController {
                                                     @PathVariable("status") Integer status) {
         notifyService.updateNotifyStatus(id, status);
         return ResponseEntity.succeed();
+    }
+
+    @PostMapping("notify")
+    @ApiOperation("编辑垂询")
+    public ResponseEntity<String> editQuestion(@Validated @RequestBody NotifyBo notifyBo) {
+        notifyService.editNotify(notifyBo);
+        return ResponseEntity.ok("success");
     }
 
     /**

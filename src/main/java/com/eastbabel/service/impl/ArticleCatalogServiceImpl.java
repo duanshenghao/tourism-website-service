@@ -34,7 +34,7 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
 
     @Override
     public List<ArticleCatalogBo> getArticleCatalog() {
-        return articleCatalogRepository.findByDeleterIsNull().stream().map(articleCatalog -> {
+        return articleCatalogRepository.findByDeleterIsNullAndStatus(1).stream().map(articleCatalog -> {
             ArticleCatalogBo articleCatalogBo = new ArticleCatalogBo();
             articleCatalogBo.setId(articleCatalog.getId());
             articleCatalogBo.setCatName(articleCatalog.getCatName());
@@ -76,6 +76,7 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         ArticleCatalog articleCatalog = articleCatalogRepository.findById(articleCatalogBo.getId()).orElseThrow(() -> new CustomException("栏目不存在"));
         articleCatalog.setCatName(articleCatalogBo.getCatName());
         articleCatalog.setCatDesc(articleCatalogBo.getCatDesc());
+        articleCatalog.setBuiltIn(articleCatalogBo.getBuiltIn());
         articleCatalog.setStatus(articleCatalogBo.getStatus());
         articleCatalog.setUpdater(webContext.getUserId());
         articleCatalog.setUpdateTime(LocalDateTime.now());

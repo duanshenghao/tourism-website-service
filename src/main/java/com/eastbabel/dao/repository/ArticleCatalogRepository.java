@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface ArticleCatalogRepository extends JpaRepository<ArticleCatalog, Integer>, JpaSpecificationExecutor<ArticleCatalog> {
 
-    List<ArticleCatalog> findByDeleterIsNull();
+    List<ArticleCatalog> findByDeleterIsNullAndStatus(Integer status);
 }

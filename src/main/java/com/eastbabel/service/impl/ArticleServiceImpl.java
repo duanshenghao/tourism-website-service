@@ -178,6 +178,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleBo.setSummary(article.getSummary());
         articleBo.setContent(article.getContent());
         articleBo.setArticleStatus(article.getArticleStatus());
+        articleBo.setSeq(article.getSeq());
         SysUser creatorUser = article.getCreatorUser();
         if(creatorUser!=null){
             articleBo.setCreatorId(creatorUser.getId());

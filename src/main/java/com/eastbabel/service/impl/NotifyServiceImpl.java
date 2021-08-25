@@ -124,6 +124,7 @@ public class NotifyServiceImpl implements NotifyService {
         notifyBo.setContent(notify.getContent());
         notifyBo.setEmail(notify.getEmail());
         notifyBo.setStatus(notify.getStatus());
+        notifyBo.setRemark(notify.getRemark());
         SysUser creatorUser = notify.getCreatorUser();
         if(creatorUser!=null){
             notifyBo.setCreatorId(creatorUser.getId());

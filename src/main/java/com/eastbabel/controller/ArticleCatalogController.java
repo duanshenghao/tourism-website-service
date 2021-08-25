@@ -70,7 +70,7 @@ public class ArticleCatalogController {
         return ResponseEntity.ok("success");
     }
 
-    @PutMapping("articleCatalog/{id}/status/{builtIn}")
+    @PutMapping("articleCatalog/{id}/status/{status}")
     @ApiOperation("修改文章栏目状态")
     public ResponseEntity<String> updateArticleCatalogStatus(@PathVariable("id") Integer id,
                                                       @PathVariable("status") Integer status) {

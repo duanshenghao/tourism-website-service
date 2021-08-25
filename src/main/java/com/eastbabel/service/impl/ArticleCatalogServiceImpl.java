@@ -125,6 +125,8 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         articleCatalogBo.setId(articleCatalog.getId());
         articleCatalogBo.setCatName(articleCatalog.getCatName());
         articleCatalogBo.setCatDesc(articleCatalog.getCatDesc());
+        articleCatalogBo.setBuiltIn(articleCatalog.getBuiltIn());
+        articleCatalogBo.setStatus(articleCatalog.getStatus());
         SysUser creatorUser = articleCatalog.getCreatorUser();
         if(creatorUser!=null){
             articleCatalogBo.setCreatorId(creatorUser.getId());

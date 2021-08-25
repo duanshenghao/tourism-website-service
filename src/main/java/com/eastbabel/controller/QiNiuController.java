@@ -37,7 +37,7 @@ public class QiNiuController {
 
     @ApiOperation("图片上传")
     @RequestMapping(value = "/image", method = RequestMethod.POST)
-        public ResponseEntity postUserInforUpDate(HttpServletRequest request,MultipartFile multipartFile) throws IOException {
+        public ResponseEntity postUserInforUpDate(MultipartFile multipartFile) throws IOException {
         int begin = multipartFile.getOriginalFilename().lastIndexOf(".");
         int end = multipartFile.getOriginalFilename().length();
         String type = multipartFile.getOriginalFilename().substring(begin,end);

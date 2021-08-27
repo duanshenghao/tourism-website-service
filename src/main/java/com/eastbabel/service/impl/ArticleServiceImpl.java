@@ -11,6 +11,7 @@ import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.ArticleService;
 import com.eastbabel.utils.QiniuUtils;
 import com.qiniu.util.Auth;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -55,18 +56,21 @@ public class ArticleServiceImpl implements ArticleService {
             articleBo.setArticleStatus(article.getArticleStatus());
             articleBo.setSeq(article.getSeq());
             String fileName = article.getImgKey();
-            String domainOfBucket = domain;
-            String encodedFileName = null;
-            try {
-                encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+            if(StringUtils.isNotEmpty(fileName)){
+                String domainOfBucket = domain;
+                String encodedFileName = null;
+                try {
+                    encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
+                Auth auth = Auth.create(accessKey, secretKey);
+                long expireInSeconds = 31536000;
+                String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
+                articleBo.setImageUrl(finalUrl);
             }
-            String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
-            Auth auth = Auth.create(accessKey, secretKey);
-            long expireInSeconds = 31536000;
-            String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
-            articleBo.setImageUrl(finalUrl);
+
             return articleBo;
         }).collect(Collectors.toList());
     }
@@ -103,7 +107,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void editArticle(ArticleBo articleBo) {
         Article article = articleRepository.findById(articleBo.getId()).orElseThrow(() -> new CustomException("文章不存在"));
-        if(!(articleBo.getImgKey().equals(article.getImgKey()))){
+        if(StringUtils.isNotEmpty(articleBo.getImgKey())&&StringUtils.isNotEmpty(article.getImgKey())){
+            if(!(articleBo.getImgKey().equals(article.getImgKey()))){
+                QiniuUtils.deleteImage(article.getImgKey());
+            }
+        }
+        if(StringUtils.isEmpty(articleBo.getImgKey())&&StringUtils.isNotEmpty(article.getImgKey())){
             QiniuUtils.deleteImage(article.getImgKey());
         }
         article.setTitle(articleBo.getTitle());
@@ -163,18 +172,21 @@ public class ArticleServiceImpl implements ArticleService {
         articleBo.setTitle(article.getTitle());
         articleBo.setImgKey(article.getImgKey());
         String fileName = article.getImgKey();
-        String domainOfBucket = domain;
-        String encodedFileName = null;
-        try {
-            encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if(StringUtils.isNotEmpty(fileName)){
+            String domainOfBucket = domain;
+            String encodedFileName = null;
+            try {
+                encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
+            Auth auth = Auth.create(accessKey, secretKey);
+            long expireInSeconds = 31536000;
+            String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
+            articleBo.setImageUrl(finalUrl);
         }
-        String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
-        Auth auth = Auth.create(accessKey, secretKey);
-        long expireInSeconds = 31536000;
-        String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
-        articleBo.setImageUrl(finalUrl);
+
         articleBo.setSummary(article.getSummary());
         articleBo.setContent(article.getContent());
         articleBo.setArticleStatus(article.getArticleStatus());
@@ -191,7 +203,9 @@ public class ArticleServiceImpl implements ArticleService {
             articleBo.setUpdaterName(updateUser.getUserName());
         }
         articleBo.setUpdateTime(article.getUpdateTime());
-        articleBo.setCatName(article.getArticleCatalog().getCatName());
+        if(article.getArticleCatalog()!=null){
+            articleBo.setCatName(article.getArticleCatalog().getCatName());
+        }
         return articleBo;
     }
 

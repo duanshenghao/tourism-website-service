@@ -77,7 +77,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void deleteQuestion(Integer id) {
-        Question question = questionRepository.findByIdAndDeleterIsNull(id).orElseThrow(() -> new CustomException("问题不存在"));
+        Question question = questionRepository.findById(id).orElseThrow(() -> new CustomException("问题不存在"));
         question.setDeleter(webContext.getUserId());
         question.setDeleteTime(LocalDateTime.now());
         questionRepository.saveAndFlush(question);

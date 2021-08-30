@@ -130,7 +130,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void deleteArticle(Integer id) {
         LocalDateTime now = LocalDateTime.now();
-        Article article = articleRepository.findByIdAndDeleterIsNull(id).orElseThrow(() -> new CustomException("文章不存在"));
+        Article article = articleRepository.findById(id).orElseThrow(() -> new CustomException("文章不存在"));
         article.setDeleter(webContext.getUserId());
         article.setDeleteTime(now);
         articleRepository.save(article);

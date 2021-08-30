@@ -35,7 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private ArticleRepository articleRepository;
-    @Autowired
+    @Resource
     private WebContext webContext;
     @Value("${qiniu.domain}")
     private String domain;

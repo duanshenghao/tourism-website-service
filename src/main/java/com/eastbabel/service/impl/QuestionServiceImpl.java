@@ -30,7 +30,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Resource
     private QuestionRepository questionRepository;
-    @Autowired
+    @Resource
     private WebContext webContext;
 
     @Override

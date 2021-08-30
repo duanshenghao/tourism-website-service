@@ -32,7 +32,7 @@ public class NotifyServiceImpl implements NotifyService {
 
     @Resource
     private NotifyRepository notifyRepository;
-    @Autowired
+    @Resource
     private WebContext webContext;
     @Autowired
     private EmailService emailService;

@@ -32,7 +32,7 @@ public class AuthAspect {
     }
 
     @Before("requestMapping()")
-    public void doBeforeRequestMapping(JoinPoint joinPoint) throws Throwable  {
+    public void doBeforeRequestMapping(JoinPoint joinPoint){
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
         HttpServletRequest request = attributes.getRequest();

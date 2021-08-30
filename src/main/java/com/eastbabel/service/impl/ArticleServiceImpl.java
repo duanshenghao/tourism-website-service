@@ -50,12 +50,12 @@ public class ArticleServiceImpl implements ArticleService {
             ArticleBo articleBo = new ArticleBo();
             articleBo.setId(article.getId());
             articleBo.setTitle(article.getTitle());
-            articleBo.setImgKey(article.getImgKey());
+            articleBo.setImageKey(article.getImageKey());
             articleBo.setSummary(article.getSummary());
             articleBo.setContent(article.getContent());
             articleBo.setArticleStatus(article.getArticleStatus());
             articleBo.setSeq(article.getSeq());
-            String fileName = article.getImgKey();
+            String fileName = article.getImageKey();
             if(StringUtils.isNotEmpty(fileName)){
                 String domainOfBucket = domain;
                 String encodedFileName = null;
@@ -81,7 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = new Article();
         article.setCatId(createArticleReq.getCatId());
         article.setTitle(createArticleReq.getTitle());
-        article.setImgKey(createArticleReq.getImgKey());
+        article.setImageKey(createArticleReq.getImageKey());
         article.setSummary(createArticleReq.getSummary());
         article.setContent(createArticleReq.getContent());
         article.setSeq(createArticleReq.getSeq());
@@ -98,7 +98,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleBo bo = new ArticleBo();
         bo.setId(article.getId());
         bo.setTitle(article.getTitle());
-        bo.setImgKey(createArticleReq.getImgKey());
+        bo.setImageKey(createArticleReq.getImageKey());
         bo.setSummary(createArticleReq.getSummary());
         bo.setContent(createArticleReq.getContent());
         return bo;
@@ -107,16 +107,16 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void editArticle(ArticleBo articleBo) {
         Article article = articleRepository.findById(articleBo.getId()).orElseThrow(() -> new CustomException("文章不存在"));
-        if(StringUtils.isNotEmpty(articleBo.getImgKey())&&StringUtils.isNotEmpty(article.getImgKey())){
-            if(!(articleBo.getImgKey().equals(article.getImgKey()))){
-                QiniuUtils.deleteImage(article.getImgKey());
+        if(StringUtils.isNotEmpty(articleBo.getImageKey())&&StringUtils.isNotEmpty(article.getImageKey())){
+            if(!(articleBo.getImageKey().equals(article.getImageKey()))){
+                QiniuUtils.deleteImage(article.getImageKey());
             }
         }
-        if(StringUtils.isEmpty(articleBo.getImgKey())&&StringUtils.isNotEmpty(article.getImgKey())){
-            QiniuUtils.deleteImage(article.getImgKey());
+        if(StringUtils.isEmpty(articleBo.getImageKey())&&StringUtils.isNotEmpty(article.getImageKey())){
+            QiniuUtils.deleteImage(article.getImageKey());
         }
         article.setTitle(articleBo.getTitle());
-        article.setImgKey(articleBo.getImgKey());
+        article.setImageKey(articleBo.getImageKey());
         article.setSummary(articleBo.getSummary());
         article.setSeq(articleBo.getSeq());
         article.setArticleStatus(articleBo.getArticleStatus());
@@ -170,8 +170,8 @@ public class ArticleServiceImpl implements ArticleService {
         articleBo.setId(article.getId());
         articleBo.setCatId(article.getCatId());
         articleBo.setTitle(article.getTitle());
-        articleBo.setImgKey(article.getImgKey());
-        String fileName = article.getImgKey();
+        articleBo.setImageKey(article.getImageKey());
+        String fileName = article.getImageKey();
         if(StringUtils.isNotEmpty(fileName)){
             String domainOfBucket = domain;
             String encodedFileName = null;

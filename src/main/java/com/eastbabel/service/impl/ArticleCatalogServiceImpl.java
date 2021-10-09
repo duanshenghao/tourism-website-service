@@ -76,8 +76,12 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         ArticleCatalog articleCatalog = articleCatalogRepository.findById(articleCatalogBo.getId()).orElseThrow(() -> new CustomException("栏目不存在"));
         articleCatalog.setCatName(articleCatalogBo.getCatName());
         articleCatalog.setCatDesc(articleCatalogBo.getCatDesc());
-        articleCatalog.setBuiltIn(articleCatalogBo.getBuiltIn());
-        articleCatalog.setStatus(articleCatalogBo.getStatus());
+        if(articleCatalogBo.getBuiltIn()!=null){
+            articleCatalog.setBuiltIn(articleCatalogBo.getBuiltIn());
+        }
+        if(articleCatalogBo.getStatus()!=null){
+            articleCatalog.setStatus(articleCatalogBo.getStatus());
+        }
         articleCatalog.setUpdater(webContext.getUserId());
         articleCatalog.setUpdateTime(LocalDateTime.now());
         articleCatalogRepository.saveAndFlush(articleCatalog);

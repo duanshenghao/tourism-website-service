@@ -55,6 +55,7 @@ public class ArticleServiceImpl implements ArticleService {
             articleBo.setContent(article.getContent());
             articleBo.setArticleStatus(article.getArticleStatus());
             articleBo.setSeq(article.getSeq());
+            articleBo.setCreateTime(article.getCreateTime());
             String fileName = article.getImageKey();
             if(StringUtils.isNotEmpty(fileName)){
                 String domainOfBucket = domain;
@@ -207,6 +208,12 @@ public class ArticleServiceImpl implements ArticleService {
             articleBo.setCatName(article.getArticleCatalog().getCatName());
         }
         return articleBo;
+    }
+
+    @Override
+    public ArticleBo getArticleDetail(Integer id) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new CustomException("文章不存在"));
+        return toArticleBo(article);
     }
 
 }

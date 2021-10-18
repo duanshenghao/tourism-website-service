@@ -20,4 +20,6 @@ public interface ArticleService {
     PagedResource<ArticleBo> getArticles(Integer articleStatus,Integer catId, Integer page, Integer size);
 
     void updateArticleStatus(Integer id, Integer articleStatus);
+
+    ArticleBo getArticleDetail(Integer id);
 }

@@ -73,4 +73,11 @@ public class ArticleController {
         articleService.updateArticleStatus(id, articleStatus);
         return ResponseEntity.succeed();
     }
+
+    @GetMapping("article/{id}")
+    @ApiOperation("获取文章详情")
+    public ResponseEntity<ArticleBo> getArticle(@PathVariable("id") Integer id) {
+        ArticleBo articleDetail = articleService.getArticleDetail(id);
+        return ResponseEntity.ok(articleDetail);
+    }
 }

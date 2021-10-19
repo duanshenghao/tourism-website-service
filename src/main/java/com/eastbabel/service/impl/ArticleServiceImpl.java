@@ -139,7 +139,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public PagedResource<ArticleBo> getArticles(Integer articleStatus,Integer catId, Integer page, Integer size) {
-        Sort seq = Sort.by("updateTime");
+        Sort seq = Sort.by("createTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<Article> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

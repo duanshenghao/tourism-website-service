@@ -85,7 +85,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public PagedResource<QuestionBo> getQuestions(Integer active, Integer page, Integer size) {
-        Sort seq = Sort.by("updateTime");
+        Sort seq = Sort.by("createTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<Question> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

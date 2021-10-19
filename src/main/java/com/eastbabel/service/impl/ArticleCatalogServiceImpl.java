@@ -98,7 +98,7 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
 
     @Override
     public PagedResource<ArticleCatalogBo> getArticleCatalogs(Integer builtIn,Integer status, Integer page, Integer size) {
-        Sort seq = Sort.by("updateTime");
+        Sort seq = Sort.by("createTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<ArticleCatalog> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -122,6 +122,7 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         articleCatalog.setStatus(status);
         articleCatalog.setUpdater(webContext.getUserId());
         articleCatalog.setUpdateTime(LocalDateTime.now());
+        articleCatalogRepository.save(articleCatalog);
     }
 
     private ArticleCatalogBo toArticleCatalogBo(ArticleCatalog articleCatalog){

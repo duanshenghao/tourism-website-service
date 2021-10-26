@@ -41,7 +41,7 @@ public class AuthAspect {
         if(url.contains("login")){
 
         }else{
-            if(!(url.contains("list")||url.contains("notify/add"))){
+            if(!(url.contains("list")||url.contains("addNotify")||url.contains("article"))){
                 TokenUtil.verify(token,adminTokenSalt);
                 Integer userId = TokenUtil.getUserId(token);
                 webContext.setUserId(userId);

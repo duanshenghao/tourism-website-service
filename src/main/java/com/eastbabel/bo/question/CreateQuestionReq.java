@@ -15,4 +15,6 @@ public class CreateQuestionReq implements Serializable {
     private String answer;
     @ApiModelProperty("状态")
     private Integer active;
+    @ApiModelProperty("排序")
+    private Integer seq;
 }

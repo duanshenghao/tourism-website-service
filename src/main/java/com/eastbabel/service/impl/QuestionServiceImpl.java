@@ -41,6 +41,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionBo.setQuestion(question.getQuestion());
             questionBo.setAnswer(question.getAnswer());
             questionBo.setActive(question.getActive());
+            questionBo.setSeq(question.getSeq());
             return questionBo;
         }).collect(Collectors.toList());
     }
@@ -56,10 +57,12 @@ public class QuestionServiceImpl implements QuestionService {
         question.setCreateTime(now);
         question.setUpdater(webContext.getUserId());
         question.setUpdateTime(now);
+        question.setSeq(createQuestionReq.getSeq());
         questionRepository.saveAndFlush(question);
         QuestionBo bo = new QuestionBo();
         bo.setQuestion(createQuestionReq.getQuestion());
         bo.setAnswer(createQuestionReq.getAnswer());
+        bo.setSeq(createQuestionReq.getSeq());
         bo.setId(question.getId());
         return bo;
     }
@@ -72,6 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
         question.setActive(questionBo.getActive());
         question.setUpdater(webContext.getUserId());
         question.setUpdateTime(LocalDateTime.now());
+        question.setSeq(questionBo.getSeq());
         questionRepository.saveAndFlush(question);
     }
 
@@ -126,6 +130,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionBo.setUpdaterId(updateUser.getId());
             questionBo.setUpdaterName(updateUser.getUserName());
         }
+        questionBo.setSeq(question.getSeq());
         questionBo.setUpdateTime(question.getUpdateTime());
         return questionBo;
     }

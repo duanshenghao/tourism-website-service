@@ -28,12 +28,7 @@ public class LoginController {
     @ApiOperation("管理员登陆")
     public ResponseEntity<?> adminLogin(@RequestBody @Valid LoginReq adminLoginReq) {
         TokenBo tokenBo = null;
-        try {
-            tokenBo = loginService.adminLogin(adminLoginReq.getAccount(), adminLoginReq.getPassword());
-        } catch (CustomException e) {
-
-            return ResponseEntity.error(e.getMessage());
-        }
+        tokenBo = loginService.adminLogin(adminLoginReq.getAccount(), adminLoginReq.getPassword());
         return ResponseEntity.ok(tokenBo);
     }
 

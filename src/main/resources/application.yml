@@ -54,7 +54,7 @@ token:
       auth: 0463c4c19d154a84a8e9d2e5d4ffe90e
       refresh: 3231c083da13413b930ebfab41b71021
 qiniu:
-  ak: c-mzyuLiU647Y0LZMZ4x1QLIxQk3oUERyso0xdik
-  sk: ZPlu5pGLOeIdP5AUzxlg0Hx4kphVxdvOOgAdiT3Z
-  bucketname: eastbabel-data
-  domain: http://qxo1gxby1.hb-bkt.clouddn.com/
+  ak: 16Kjipw_szfd8VCSHJJQhjq69kCf1fSTAXvuaXgY
+  sk: FC6F4Dmmi7-Jvyo32YThMQsYBNRgg7Rg9HUoFZ6L
+  bucketname: eastbabel
+  domain: http://oss.eastbabel.cn

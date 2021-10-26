@@ -32,7 +32,7 @@ public class NotifyServiceImpl implements NotifyService {
 
     @Resource
     private NotifyRepository notifyRepository;
-    @Autowired
+    @Resource
     private WebContext webContext;
     @Autowired
     private EmailService emailService;
@@ -90,7 +90,7 @@ public class NotifyServiceImpl implements NotifyService {
 
     @Override
     public PagedResource<NotifyBo> getNotifys(Integer status, Integer page, Integer size) {
-        Sort seq = Sort.by("updateTime");
+        Sort seq = Sort.by("createTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<Notify> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -105,6 +105,16 @@ public class NotifyServiceImpl implements NotifyService {
         return new PagedResource<>(collect, page, size, articlePage.getTotalElements());
     }
 
+    @Override
+    public void editNotify(NotifyBo notifyBo) {
+        Notify notify = notifyRepository.findById(notifyBo.getId()).orElseThrow(() -> new CustomException(""));
+        notify.setRemark(notifyBo.getRemark());
+        notify.setStatus(notifyBo.getStatus());
+        notify.setUpdater(webContext.getUserId());
+        notify.setUpdateTime(LocalDateTime.now());
+        notifyRepository.saveAndFlush(notify);
+    }
+
     private NotifyBo toNotifyBo(Notify notify){
         NotifyBo notifyBo = new NotifyBo();
         notifyBo.setId(notify.getId());
@@ -114,6 +124,7 @@ public class NotifyServiceImpl implements NotifyService {
         notifyBo.setContent(notify.getContent());
         notifyBo.setEmail(notify.getEmail());
         notifyBo.setStatus(notify.getStatus());
+        notifyBo.setRemark(notify.getRemark());
         SysUser creatorUser = notify.getCreatorUser();
         if(creatorUser!=null){
             notifyBo.setCreatorId(creatorUser.getId());

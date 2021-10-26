@@ -23,7 +23,7 @@ public class Article extends BaseEntity {
     private String title;
     @Basic
     @Column(name = "img_key")
-    private String imgKey;
+    private String imageKey;
     @Basic
     @Column(name = "summary")
     private String summary;

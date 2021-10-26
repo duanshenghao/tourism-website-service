@@ -30,7 +30,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Resource
     private QuestionRepository questionRepository;
-    @Autowired
+    @Resource
     private WebContext webContext;
 
     @Override
@@ -40,6 +40,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionBo.setId(question.getId());
             questionBo.setQuestion(question.getQuestion());
             questionBo.setAnswer(question.getAnswer());
+            questionBo.setActive(question.getActive());
             return questionBo;
         }).collect(Collectors.toList());
     }
@@ -49,7 +50,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = new Question();
         question.setQuestion(createQuestionReq.getQuestion());
         question.setAnswer(createQuestionReq.getAnswer());
-        question.setActive(createQuestionReq.getActive());
+        question.setActive(1);
         LocalDateTime now = LocalDateTime.now();
         question.setCreator(webContext.getUserId());
         question.setCreateTime(now);
@@ -68,6 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(questionBo.getId()).orElseThrow(() -> new CustomException("问题不存在"));
         question.setQuestion(questionBo.getQuestion());
         question.setAnswer(questionBo.getAnswer());
+        question.setActive(questionBo.getActive());
         question.setUpdater(webContext.getUserId());
         question.setUpdateTime(LocalDateTime.now());
         questionRepository.saveAndFlush(question);
@@ -75,7 +77,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void deleteQuestion(Integer id) {
-        Question question = questionRepository.findByIdAndDeleterIsNull(id).orElseThrow(() -> new CustomException("问题不存在"));
+        Question question = questionRepository.findById(id).orElseThrow(() -> new CustomException("问题不存在"));
         question.setDeleter(webContext.getUserId());
         question.setDeleteTime(LocalDateTime.now());
         questionRepository.saveAndFlush(question);
@@ -83,7 +85,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public PagedResource<QuestionBo> getQuestions(Integer active, Integer page, Integer size) {
-        Sort seq = Sort.by("updateTime");
+        Sort seq = Sort.by("createTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<Question> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

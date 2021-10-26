@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ArticleRepository extends JpaRepository<Article, Integer>, JpaSpecificationExecutor<Article> {
 
-    List<Article> findByDeleterIsNullAndArticleStatusOrderBySeqDesc(Integer articleStatus);
+    List<Article> findByDeleterIsNullAndArticleStatusOrderBySeqAsc(Integer articleStatus);
 
     Optional<Article> findByIdAndDeleterIsNull(Integer sysId);
 }

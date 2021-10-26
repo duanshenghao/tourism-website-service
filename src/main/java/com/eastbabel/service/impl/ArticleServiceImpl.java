@@ -10,6 +10,8 @@ import com.eastbabel.dao.repository.ArticleRepository;
 import com.eastbabel.exception.CustomException;
 import com.eastbabel.service.ArticleService;
 import com.eastbabel.utils.QiniuUtils;
+import com.qiniu.util.Auth;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,20 +35,43 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private ArticleRepository articleRepository;
-    @Autowired
+    @Resource
     private WebContext webContext;
     @Value("${qiniu.domain}")
     private String domain;
+    @Value("${qiniu.ak}")
+    private String accessKey;
+    @Value("${qiniu.sk}")
+    private String secretKey;
 
     @Override
     public List<ArticleBo> getArticle() {
-        return articleRepository.findByDeleterIsNullAndArticleStatusOrderBySeqDesc(1).stream().map(article -> {
+        return articleRepository.findByDeleterIsNullAndArticleStatusOrderBySeqAsc(1).stream().map(article -> {
             ArticleBo articleBo = new ArticleBo();
             articleBo.setId(article.getId());
             articleBo.setTitle(article.getTitle());
-            articleBo.setImgKey(article.getImgKey());
+            articleBo.setImageKey(article.getImageKey());
             articleBo.setSummary(article.getSummary());
             articleBo.setContent(article.getContent());
+            articleBo.setArticleStatus(article.getArticleStatus());
+            articleBo.setSeq(article.getSeq());
+            articleBo.setCreateTime(article.getCreateTime());
+            String fileName = article.getImageKey();
+            if(StringUtils.isNotEmpty(fileName)){
+                String domainOfBucket = domain;
+                String encodedFileName = null;
+                try {
+                    encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
+                Auth auth = Auth.create(accessKey, secretKey);
+                long expireInSeconds = 31536000;
+                String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
+                articleBo.setImageUrl(finalUrl);
+            }
+
             return articleBo;
         }).collect(Collectors.toList());
     }
@@ -55,11 +82,15 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = new Article();
         article.setCatId(createArticleReq.getCatId());
         article.setTitle(createArticleReq.getTitle());
-        article.setImgKey(createArticleReq.getImgKey());
+        article.setImageKey(createArticleReq.getImageKey());
         article.setSummary(createArticleReq.getSummary());
         article.setContent(createArticleReq.getContent());
         article.setSeq(createArticleReq.getSeq());
-        article.setArticleStatus(createArticleReq.getArticleStatus());
+        if(createArticleReq.getArticleStatus()!=null){
+            article.setArticleStatus(createArticleReq.getArticleStatus());
+        }else{
+            article.setArticleStatus(1);
+        }
         article.setCreator(webContext.getUserId());
         article.setCreateTime(now);
         article.setUpdater(webContext.getUserId());
@@ -68,7 +99,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleBo bo = new ArticleBo();
         bo.setId(article.getId());
         bo.setTitle(article.getTitle());
-        bo.setImgKey(createArticleReq.getImgKey());
+        bo.setImageKey(createArticleReq.getImageKey());
         bo.setSummary(createArticleReq.getSummary());
         bo.setContent(createArticleReq.getContent());
         return bo;
@@ -77,12 +108,19 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void editArticle(ArticleBo articleBo) {
         Article article = articleRepository.findById(articleBo.getId()).orElseThrow(() -> new CustomException("文章不存在"));
-        if(!(articleBo.getImgKey().equals(article.getImgKey()))){
-            QiniuUtils.deleteImage(article.getImgKey());
+        if(StringUtils.isNotEmpty(articleBo.getImageKey())&&StringUtils.isNotEmpty(article.getImageKey())){
+            if(!(articleBo.getImageKey().equals(article.getImageKey()))){
+                QiniuUtils.deleteImage(article.getImageKey());
+            }
+        }
+        if(StringUtils.isEmpty(articleBo.getImageKey())&&StringUtils.isNotEmpty(article.getImageKey())){
+            QiniuUtils.deleteImage(article.getImageKey());
         }
         article.setTitle(articleBo.getTitle());
-        article.setImgKey(articleBo.getImgKey());
+        article.setImageKey(articleBo.getImageKey());
         article.setSummary(articleBo.getSummary());
+        article.setSeq(articleBo.getSeq());
+        article.setArticleStatus(articleBo.getArticleStatus());
         article.setContent(articleBo.getContent());
         article.setUpdater(webContext.getUserId());
         article.setUpdateTime(LocalDateTime.now());
@@ -93,7 +131,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void deleteArticle(Integer id) {
         LocalDateTime now = LocalDateTime.now();
-        Article article = articleRepository.findByIdAndDeleterIsNull(id).orElseThrow(() -> new CustomException("文章不存在"));
+        Article article = articleRepository.findById(id).orElseThrow(() -> new CustomException("文章不存在"));
         article.setDeleter(webContext.getUserId());
         article.setDeleteTime(now);
         articleRepository.save(article);
@@ -101,7 +139,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public PagedResource<ArticleBo> getArticles(Integer articleStatus,Integer catId, Integer page, Integer size) {
-        Sort seq = Sort.by("updateTime");
+        Sort seq = Sort.by("createTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<Article> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -133,10 +171,27 @@ public class ArticleServiceImpl implements ArticleService {
         articleBo.setId(article.getId());
         articleBo.setCatId(article.getCatId());
         articleBo.setTitle(article.getTitle());
-        articleBo.setImgKey(article.getImgKey());
-        articleBo.setImageUrl(domain+article.getImgKey());
+        articleBo.setImageKey(article.getImageKey());
+        String fileName = article.getImageKey();
+        if(StringUtils.isNotEmpty(fileName)){
+            String domainOfBucket = domain;
+            String encodedFileName = null;
+            try {
+                encodedFileName = URLEncoder.encode(fileName, "utf-8").replace("+", "%20");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            String publicUrl = String.format("%s/%s", domainOfBucket, encodedFileName);
+            Auth auth = Auth.create(accessKey, secretKey);
+            long expireInSeconds = 31536000;
+            String finalUrl = auth.privateDownloadUrl(publicUrl, expireInSeconds);
+            articleBo.setImageUrl(finalUrl);
+        }
+
         articleBo.setSummary(article.getSummary());
         articleBo.setContent(article.getContent());
+        articleBo.setArticleStatus(article.getArticleStatus());
+        articleBo.setSeq(article.getSeq());
         SysUser creatorUser = article.getCreatorUser();
         if(creatorUser!=null){
             articleBo.setCreatorId(creatorUser.getId());
@@ -149,8 +204,16 @@ public class ArticleServiceImpl implements ArticleService {
             articleBo.setUpdaterName(updateUser.getUserName());
         }
         articleBo.setUpdateTime(article.getUpdateTime());
-        articleBo.setCatName(article.getArticleCatalog().getCatName());
+        if(article.getArticleCatalog()!=null){
+            articleBo.setCatName(article.getArticleCatalog().getCatName());
+        }
         return articleBo;
+    }
+
+    @Override
+    public ArticleBo getArticleDetail(Integer id) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new CustomException("文章不存在"));
+        return toArticleBo(article);
     }
 
 }

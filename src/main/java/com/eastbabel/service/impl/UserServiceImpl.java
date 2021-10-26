@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(PasswordUtil.encryption(password, salt));
         user.setSalt(salt);
         user.setEmail(createUserReq.getEmail());
-        user.setActiveStatus(0);
+        user.setActiveStatus(1);
         user.setCreator(webContext.getUserId());
         user.setCreateTime(LocalDateTime.now());
         user.setUpdater(webContext.getUserId());
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PagedResource<SysUserBo> getUsers(Integer activeStatus, Integer page, Integer size) {
-        Sort seq = Sort.by("updateTime");
+        Sort seq = Sort.by("createTime");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<SysUser> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService {
         SysUser user = userRepository.findById(editUser.getId()).orElseThrow(() -> new CustomException("用户不存在"));
         user.setUserName(editUser.getUsername());
         user.setEmail(editUser.getEmail());
+        user.setActiveStatus(editUser.getActiveStatus());
         user.setUpdater(webContext.getUserId());
         user.setUpdateTime(LocalDateTime.now());
         userRepository.saveAndFlush(user);

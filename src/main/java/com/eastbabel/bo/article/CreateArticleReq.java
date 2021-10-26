@@ -14,7 +14,7 @@ public class CreateArticleReq implements Serializable {
     @ApiModelProperty("标题")
     private String title;
     @ApiModelProperty("封面图key")
-    private String imgKey;
+    private String imageKey;
     @ApiModelProperty("摘要")
     private String summary;
     @ApiModelProperty("内容")

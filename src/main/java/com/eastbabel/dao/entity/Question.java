@@ -23,5 +23,8 @@ public class Question extends BaseEntity {
     @Basic
     @Column(name = "active")
     private Integer active;
+    @Basic
+    @Column(name = "seq")
+    private Integer seq;
 
 }

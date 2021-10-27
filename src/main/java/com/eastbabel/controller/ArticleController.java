@@ -74,7 +74,7 @@ public class ArticleController {
         return ResponseEntity.succeed();
     }
 
-    @GetMapping("article/{id}")
+    @GetMapping("articleDetail/{id}")
     @ApiOperation("获取文章详情")
     public ResponseEntity<ArticleBo> getArticle(@PathVariable("id") Integer id) {
         ArticleBo articleDetail = articleService.getArticleDetail(id);

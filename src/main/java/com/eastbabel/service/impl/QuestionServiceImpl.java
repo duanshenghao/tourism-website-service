@@ -35,7 +35,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionBo> getQuestion() {
-        return questionRepository.findByDeleterIsNullAndActive(1).stream().map(question -> {
+        return questionRepository.findByDeleterIsNullAndActiveOrderBySeq(1).stream().map(question -> {
             QuestionBo questionBo = new QuestionBo();
             questionBo.setId(question.getId());
             questionBo.setQuestion(question.getQuestion());
@@ -89,7 +89,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public PagedResource<QuestionBo> getQuestions(Integer active, Integer page, Integer size) {
-        Sort seq = Sort.by("createTime");
+        Sort seq = Sort.by("seq");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<Question> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

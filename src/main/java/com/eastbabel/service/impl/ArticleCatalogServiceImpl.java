@@ -51,11 +51,11 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
         ArticleCatalog articleCatalog = new ArticleCatalog();
         articleCatalog.setCatName(createArticleCatalogReq.getCatName());
         articleCatalog.setCatDesc(createArticleCatalogReq.getCatDesc());
-        articleCatalog.setBuiltIn(0);
+        articleCatalog.setBuiltIn(0);//是否内置栏目，默认否
         if(createArticleCatalogReq.getStatus()!=null){
             articleCatalog.setStatus(createArticleCatalogReq.getStatus());
         }else{
-            articleCatalog.setStatus(1);
+            articleCatalog.setStatus(0);
         }
         articleCatalog.setCreator(webContext.getUserId());
         articleCatalog.setCreateTime(now);
@@ -74,6 +74,7 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
     @Override
     public void editArticleCatalog(EditArticleCatalog articleCatalogBo) {
         ArticleCatalog articleCatalog = articleCatalogRepository.findById(articleCatalogBo.getId()).orElseThrow(() -> new CustomException("栏目不存在"));
+        new CustomException("内置栏目不可修改").throwIf(articleCatalog.getBuiltIn()==1);
         articleCatalog.setCatName(articleCatalogBo.getCatName());
         articleCatalog.setCatDesc(articleCatalogBo.getCatDesc());
         if(articleCatalogBo.getBuiltIn()!=null){
@@ -91,6 +92,7 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
     public void deleteArticleCatalog(Integer id) {
         LocalDateTime now = LocalDateTime.now();
         ArticleCatalog articleCatalog = articleCatalogRepository.findById(id).orElseThrow(() -> new CustomException("栏目不存在"));
+        new CustomException("内置栏目不可删除").throwIf(articleCatalog.getBuiltIn()==1);
         articleCatalog.setDeleter(webContext.getUserId());
         articleCatalog.setDeleteTime(now);
         articleCatalogRepository.save(articleCatalog);

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Integer>, JpaSpecificationExecutor<Question> {
 
-    List<Question> findByDeleterIsNullAndActive(Integer active);
+    List<Question> findByDeleterIsNullAndActiveOrderBySeq(Integer active);
 
     Optional<Question> findByIdAndDeleterIsNull(Integer sysId);
 }

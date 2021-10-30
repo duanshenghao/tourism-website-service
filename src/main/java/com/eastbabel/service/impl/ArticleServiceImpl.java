@@ -124,6 +124,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setContent(articleBo.getContent());
         article.setUpdater(webContext.getUserId());
         article.setUpdateTime(LocalDateTime.now());
+        article.setCatId(articleBo.getCatId());
         articleRepository.saveAndFlush(article);
 
     }

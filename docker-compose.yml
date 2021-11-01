@@ -8,6 +8,7 @@ services:
       OFFICAL_MYSQL_PASSWORD: ${OFFICAL_MYSQL_PASSWORD}
       OFFICAL_MYSQL_HOST: ${OFFICAL_MYSQL_HOST}
       OFFICAL_MYSQL_PORT: ${OFFICAL_MYSQL_PORT}
+      TZ: Asia/Shanghai
     ports:
       - 8083:8083
     volumes:

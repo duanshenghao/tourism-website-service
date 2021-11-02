@@ -48,6 +48,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer createUser(CreateUserReq createUserReq) {
+        SysUser sysUser = userRepository.findByUserName(createUserReq.getUsername());
+        new CustomException("用户已存在").throwIf(sysUser!=null);
         SysUser user = new SysUser();
         user.setUserName(createUserReq.getUsername());
         String salt = PasswordUtil.genSalt();

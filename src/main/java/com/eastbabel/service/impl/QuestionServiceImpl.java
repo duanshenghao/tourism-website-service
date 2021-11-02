@@ -51,7 +51,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = new Question();
         question.setQuestion(createQuestionReq.getQuestion());
         question.setAnswer(createQuestionReq.getAnswer());
-        question.setActive(1);
+        question.setActive(createQuestionReq.getActive());
         LocalDateTime now = LocalDateTime.now();
         question.setCreator(webContext.getUserId());
         question.setCreateTime(now);

@@ -12,6 +12,7 @@ import com.eastbabel.service.ArticleService;
 import com.eastbabel.utils.QiniuUtils;
 import com.qiniu.util.Auth;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -83,8 +84,10 @@ public class ArticleServiceImpl implements ArticleService {
         article.setCatId(createArticleReq.getCatId());
         article.setTitle(createArticleReq.getTitle());
         article.setImageKey(createArticleReq.getImageKey());
-        article.setSummary(createArticleReq.getSummary());
-        article.setContent(createArticleReq.getContent());
+        String content = createArticleReq.getContent();
+        String html = Jsoup.parse(content).text();
+        article.setSummary(StringUtils.length(html) > 200 ? html.substring(0, 200) : html);
+        article.setContent(content);
         article.setSeq(createArticleReq.getSeq());
         if(createArticleReq.getArticleStatus()!=null){
             article.setArticleStatus(createArticleReq.getArticleStatus());
@@ -118,10 +121,12 @@ public class ArticleServiceImpl implements ArticleService {
         }
         article.setTitle(articleBo.getTitle());
         article.setImageKey(articleBo.getImageKey());
-        article.setSummary(articleBo.getSummary());
+        String content = articleBo.getContent();
+        article.setContent(content);
+        String html = Jsoup.parse(content).text();
+        article.setSummary(StringUtils.length(html) > 200 ? html.substring(0, 200) : html);
         article.setSeq(articleBo.getSeq());
         article.setArticleStatus(articleBo.getArticleStatus());
-        article.setContent(articleBo.getContent());
         article.setUpdater(webContext.getUserId());
         article.setUpdateTime(LocalDateTime.now());
         article.setCatId(articleBo.getCatId());

@@ -100,7 +100,7 @@ public class ArticleCatalogServiceImpl implements ArticleCatalogService {
 
     @Override
     public PagedResource<ArticleCatalogBo> getArticleCatalogs(Integer builtIn,Integer status, Integer page, Integer size) {
-        Sort seq = Sort.by("createTime");
+        Sort seq = Sort.by("createTime").descending();
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<ArticleCatalog> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

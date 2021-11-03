@@ -144,8 +144,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public PagedResource<ArticleBo> getArticles(Integer articleStatus,Integer catId, Integer page, Integer size) {
-        Sort seq = Sort.by("createTime");
+    public PagedResource<ArticleBo> getArticles(Integer articleStatus,Integer catId, Integer page, Integer size,String title) {
+        Sort seq = Sort.by("createTime").descending();
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<Article> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -154,6 +154,9 @@ public class ArticleServiceImpl implements ArticleService {
             }
             if(catId != null){
                 predicates.add(criteriaBuilder.equal(root.get("catId"), catId));
+            }
+            if(StringUtils.isNotEmpty(title)){
+                predicates.add(criteriaBuilder.like(root.get("title"),"%"+title+"%"));
             }
             predicates.add(criteriaBuilder.isNull(root.get("deleter")));
             return criteriaBuilder.and(predicates.toArray(predicates.toArray(new Predicate[0])));

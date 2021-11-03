@@ -36,8 +36,9 @@ public class ArticleController {
             @RequestParam(value = "articleStatus", required = false) Integer articleStatus,
             @RequestParam(value = "catId", required = false) Integer catId,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(articleService.getArticles(articleStatus,catId, page, size));
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "title", defaultValue = "") String title) {
+        return ResponseEntity.ok(articleService.getArticles(articleStatus,catId, page, size,title));
     }
 
     @GetMapping("article/list")

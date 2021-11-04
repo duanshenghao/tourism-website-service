@@ -57,7 +57,11 @@ public class UserServiceImpl implements UserService {
         user.setPassword(PasswordUtil.encryption(password, salt));
         user.setSalt(salt);
         user.setEmail(createUserReq.getEmail());
-        user.setActiveStatus(1);
+        if(createUserReq.getActiveStatus()!=null){
+            user.setActiveStatus(createUserReq.getActiveStatus());
+        }else{
+            user.setActiveStatus(1);
+        }
         user.setCreator(webContext.getUserId());
         user.setCreateTime(LocalDateTime.now());
         user.setUpdater(webContext.getUserId());

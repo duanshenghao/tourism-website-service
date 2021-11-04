@@ -13,4 +13,6 @@ public class CreateUserReq implements Serializable {
     private String username;
     @ApiModelProperty("邮箱")
     private String email;
+    @ApiModelProperty("是否冻结")
+    private Integer activeStatus;
 }

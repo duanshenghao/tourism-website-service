@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PagedResource<SysUserBo> getUsers(Integer activeStatus, Integer page, Integer size) {
-        Sort seq = Sort.by("createTime").descending();
+        Sort seq = Sort.by("id");
         Pageable pageable = PageRequest.of(page - 1, size, seq);
         Specification<SysUser> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

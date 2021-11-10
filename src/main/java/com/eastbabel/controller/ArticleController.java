@@ -43,8 +43,11 @@ public class ArticleController {
 
     @GetMapping("article/list")
     @ApiOperation("获取文章列表")
-    public ResponseEntity<List<ArticleBo>> getArticle() {
-        return ResponseEntity.ok(articleService.getArticle());
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "catId", value = "栏目Id")
+    })
+    public ResponseEntity<List<ArticleBo>> getArticleList(@RequestParam(value = "catId", required = false) Integer catId) {
+        return ResponseEntity.ok(articleService.getArticle(catId));
     }
 
     @PutMapping("article")

@@ -9,7 +9,7 @@ import com.eastbabel.bo.question.QuestionBo;
 import java.util.List;
 
 public interface ArticleService {
-    List<ArticleBo> getArticle();
+    List<ArticleBo> getArticle(Integer catId);
 
     ArticleBo createArticle(CreateArticleReq createArticleReq);
 

@@ -46,8 +46,17 @@ public class ArticleServiceImpl implements ArticleService {
     private String secretKey;
 
     @Override
-    public List<ArticleBo> getArticle() {
-        return articleRepository.findByDeleterIsNullAndArticleStatusOrderBySeqAsc(1).stream().map(article -> {
+    public List<ArticleBo> getArticle(Integer catId) {
+        Specification<Article> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if(catId != null){
+                predicates.add(criteriaBuilder.equal(root.get("catId"), catId));
+            }
+            predicates.add(criteriaBuilder.isNull(root.get("deleter")));
+            predicates.add(criteriaBuilder.equal(root.get("articleStatus"),1));
+            return criteriaBuilder.and(predicates.toArray(predicates.toArray(new Predicate[0])));
+        };
+        return articleRepository.findAll(specification,Sort.by("seq")).stream().map(article -> {
             ArticleBo articleBo = new ArticleBo();
             articleBo.setId(article.getId());
             articleBo.setTitle(article.getTitle());
@@ -57,6 +66,10 @@ public class ArticleServiceImpl implements ArticleService {
             articleBo.setArticleStatus(article.getArticleStatus());
             articleBo.setSeq(article.getSeq());
             articleBo.setCreateTime(article.getCreateTime());
+            articleBo.setCatId(article.getCatId());
+            if(article.getArticleCatalog()!=null){
+                articleBo.setCatName(article.getArticleCatalog().getCatName());
+            }
             String fileName = article.getImageKey();
             if(StringUtils.isNotEmpty(fileName)){
                 String domainOfBucket = domain;
